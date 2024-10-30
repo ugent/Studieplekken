@@ -1,6 +1,5 @@
 package blok2.http.controllers;
 
-import blok2.http.security.services.CustomUserDetailsService;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.validation.Assertion;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import blok2.security.services.CustomUserDetailsService;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package blok2.http.security.services;
+package blok2.security.services;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;

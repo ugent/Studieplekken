@@ -3,7 +3,6 @@ package blok2.database.services;
 import blok2.database.dao.IFaqItemDao;
 import blok2.database.repositories.FaqItemRepository;
 import blok2.model.FaqItem;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

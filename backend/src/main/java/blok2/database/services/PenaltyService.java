@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 public class PenaltyService implements IPenaltyDao {
 
-    private int PENALTY_OFFSET = 20;
     private String EARLY_DELETE_CLASS = "profile.penalties.table.late.delete";
     private String NOT_ATTENDED_CLASS = "profile.penalties.table.not.attended";
     private int EARLY_DELETE_LIMIT = 4;

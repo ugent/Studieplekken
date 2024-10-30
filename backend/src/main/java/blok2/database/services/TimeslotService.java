@@ -3,8 +3,10 @@ package blok2.database.services;
 import blok2.database.dao.ITimeslotDao;
 import blok2.database.repositories.TimeslotRepository;
 import blok2.exceptions.InvalidRequestParametersException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import blok2.model.location.Location;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -49,28 +51,46 @@ public class TimeslotService implements ITimeslotDao {
     }
 
     @Override
-    public List<Timeslot> addTimeslots(List<Timeslot> timeslot) {
-        for (Timeslot t : timeslot) {
-            Location loc = locationService.getLocationById(t.getLocationId());
-            if (t.isReservable() && t.getReservableFrom() == null) {
+    public List<Timeslot> addTimeslots(List<Timeslot> timeslots) {
+        for (Timeslot timeslot : timeslots) {
+            Location location = locationService.getLocationById(timeslot.getLocationId());
+
+            if (timeslot.isReservable() && timeslot.getReservableFrom() == null) {
                 throw new InvalidRequestParametersException("Reservable timeslot is invalid.");
             }
-            t.setSeatCount(loc.getNumberOfSeats());
-            if (t.getTimeslotGroup() == null) {
-                t.setTimeslotGroup(UUID.randomUUID());
+
+            timeslot.setSeatCount(location.getNumberOfSeats());
+
+            if (location.getNumberOfSeats() > 50) {
+                timeslot.setReservable(true);
             }
 
+            if (timeslot.getTimeslotGroup() == null) {
+                timeslot.setTimeslotGroup(UUID.randomUUID());
+            }
         }
-        return timeslotRepository.saveAll(timeslot);
+
+        return timeslotRepository.saveAll(timeslots);
     }
 
     @Override
     public Timeslot addTimeslot(Timeslot timeslot) {
-        Location loc = locationService.getLocationById(timeslot.getLocationId());
-        timeslot.setSeatCount(loc.getNumberOfSeats());
+        Location location = locationService.getLocationById(timeslot.getLocationId());
+
+        if (location == null) {
+            throw new NoSuchDatabaseObjectException("Location does not exist");
+        }
+
+        if (location.getNumberOfSeats() > 50) {
+            timeslot.setReservable(true);
+        }
+
         if (timeslot.getTimeslotGroup() == null) {
             timeslot.setTimeslotGroup(UUID.randomUUID());
         }
+
+        timeslot.setSeatCount(location.getNumberOfSeats());
+
         return timeslotRepository.save(timeslot);
     }
 
@@ -82,6 +102,14 @@ public class TimeslotService implements ITimeslotDao {
     @Override
     public Timeslot updateTimeslot(Timeslot timeslot) {
         Timeslot original = timeslotRepository.getByTimeslotSeqnr(timeslot.getTimeslotSeqnr());
+        Location location = locationService.getLocationById(timeslot.getLocationId());
+
+        if (original == null) throw new NoSuchDatabaseObjectException("Timeslot does not exist");
+        if (location == null) throw new NoSuchDatabaseObjectException("Location does not exist");
+
+        if (location.getNumberOfSeats() > 50) {
+            timeslot.setReservable(true);
+        }
 
         original.setTimeslotDate(timeslot.timeslotDate());
         original.setOpeningHour(timeslot.getOpeningHour());

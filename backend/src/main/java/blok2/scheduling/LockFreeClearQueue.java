@@ -2,7 +2,6 @@ package blok2.scheduling;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -65,13 +64,7 @@ public class LockFreeClearQueue<T> {
         public volatile T value;
         public volatile Node<T> previous;
         public volatile int index;
-        
-        public Node(T value) {
-            this.value = value;
-            this.previous = null;
-            this.index = 0;
-        }
-        
+
         public Node(T value, int index) {
             this.value = value;
             this.previous = null;

@@ -36,5 +36,4 @@ public class WhoAmIController {
             return new User();
         }
     }
-
 }

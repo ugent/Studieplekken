@@ -3,10 +3,9 @@ package blok2.http.controllers;
 import blok2.database.dao.*;
 import blok2.extensions.helpers.LocationWithApproval;
 import blok2.extensions.helpers.View;
-import blok2.http.security.authorization.AuthorizedLocationController;
 import blok2.exceptions.AlreadyExistsException;
-import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.orm.LocationNameAndNextReservableFrom;
+import blok2.http.controllers.authorization.AuthorizedLocationController;
 import blok2.extensions.mail.MailService;
 import blok2.model.ActionLogEntry;
 import blok2.model.location.Location;
@@ -53,9 +52,13 @@ public class LocationController extends AuthorizedLocationController {
     // *************************************
     @Autowired
     public LocationController(
-            ILocationDao locationDao, ILocationTagDao locationTagDao,
-            IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao,
-            IActionLogDao actionLogDao, IUserLocationSubscriptionDao userLocationSubscriptionDao
+            ILocationDao locationDao, 
+            ILocationTagDao locationTagDao,
+            IVolunteerDao volunteerDao, 
+            MailService mailService, 
+            ILocationReservationDao locationReservationDao,
+            IActionLogDao actionLogDao, 
+            IUserLocationSubscriptionDao userLocationSubscriptionDao
     ) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
@@ -71,11 +74,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("permitAll()")
     public List<Location> getAllActiveLocations() {
         List<Location> locations = locationDao.getAllActiveLocations();
-
-        locations.sort(
-            Comparator.comparing(Location::getName)
-        );
-
+        locations.sort(Comparator.comparing(Location::getName));
         return locations;
     }
 
@@ -83,9 +82,9 @@ public class LocationController extends AuthorizedLocationController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<Location> getAllLocations() {
-        return locationDao.getAllLocations().stream().sorted(
-                Comparator.comparing(Location::getName)
-        ).collect(Collectors.toList());
+        List<Location> locations = locationDao.getAllLocations();
+        locations.sort(Comparator.comparing(Location::getName));
+        return locations;
     }
 
     @JsonView(View.List.class)
@@ -113,20 +112,16 @@ public class LocationController extends AuthorizedLocationController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addLocation(@AuthenticationPrincipal User user, @RequestBody Location location) {
-        System.out.println(user);
-        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.INSERTION, user, ActionLogEntry.Domain.LOCATION);
-        actionLogDao.addLogEntry(logEntry);
-        isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
-        try {
-            locationDao.getLocationByName(location.getName());
-            throw new AlreadyExistsException("location name already in use");
-        } catch (NoSuchDatabaseObjectException ignore) {
-            // good to go
+        // Only authorize if the user is an admin or has the authority to add locations.
+        this.checkAuthorization((loc, $) -> hasAuthority(loc.getAuthority()), location);
+
+        // Make sure the location does not already exist.
+        if (locationDao.existsLocationByName(location.getName())) {
+            throw new AlreadyExistsException("Location name already in use");
         }
 
+        // Add the location to the database.
         this.locationDao.addLocation(location);
-
-        logger.info(String.format("New location %s added", location.getName()));
     }
 
     @PutMapping("/{locationId}")
@@ -136,7 +131,7 @@ public class LocationController extends AuthorizedLocationController {
                 ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.LOCATION, locationId
         ));
 
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
 
         locationDao.updateLocation(location);
     }
@@ -156,7 +151,7 @@ public class LocationController extends AuthorizedLocationController {
     public void deleteLocation(@PathVariable("locationId") int locationId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.DELETION, user, ActionLogEntry.Domain.LOCATION, locationId);
         actionLogDao.addLogEntry(logEntry);
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
 
         // Send email to all users who has a reservation for this location.
         List<LocationReservation> locationReservations = locationReservationDao.getAllFutureLocationReservationsOfLocation(locationId);
@@ -177,7 +172,7 @@ public class LocationController extends AuthorizedLocationController {
     public void addVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
         actionLogDao.addLogEntry(logEntry);
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
         volunteerDao.addVolunteer(locationId, userId);
     }
 
@@ -186,14 +181,13 @@ public class LocationController extends AuthorizedLocationController {
     public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
         actionLogDao.addLogEntry(logEntry);
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
         volunteerDao.deleteVolunteer(locationId, userId);
     }
 
     @GetMapping("/{locationId}/volunteers")
-    // TODO: should be fixed by future PR, double check on merge
     public List<User> getVolunteers(@PathVariable int locationId) {
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
         return volunteerDao.getVolunteers(locationId);
     }
 
@@ -210,7 +204,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void setupTagsForLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<Integer> tagIds) {
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
         logger.info(String.format("Setting up the tags for location '%s' with ids [%s]",
                 locationId, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));
         locationTagDao.deleteAllTagsFromLocation(locationId);

@@ -1,6 +1,9 @@
-package blok2.http.security.config;
+package blok2.security.filter;
 
 import blok2.model.users.User;
+import blok2.security.token.CustomAuthenticationToken;
+
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,15 +24,28 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
         String username = request.getHeader("AS-USER");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(username != null && auth != null && auth.getPrincipal() instanceof User && ((User) auth.getPrincipal()).isAdmin()) {
-            Authentication token = new CustomAuthenticationToken(username);
-            Authentication authToken = authManager.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (username != null && auth != null) {
+            Object principal = auth.getPrincipal();
+
+            if (principal instanceof User) {
+                User user = (User) principal;
+
+                if (user.isAdmin()) {
+                    Authentication token = new CustomAuthenticationToken(username);
+                    Authentication authToken = authManager.authenticate(token);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 }

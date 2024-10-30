@@ -17,7 +17,6 @@ import org.opengis.referencing.operation.TransformException;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -195,8 +194,6 @@ public class StadGentLocation {
         String hours = l.map(t -> t.getOpeningHour().format(formatter) + " - " + t.getClosingHour().format(formatter)).collect(Collectors.joining(","));
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
         String dateStr = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().timeslotDate().format(dateTimeFormatter);
-        LocalTime openingTime = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getOpeningHour();
-        LocalTime closingTime = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getClosingHour();
 
         ls.initializeTags(loc);
 

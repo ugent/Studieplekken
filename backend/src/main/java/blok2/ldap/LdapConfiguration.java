@@ -1,4 +1,4 @@
-package blok2.http.security.config;
+package blok2.ldap;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
+import lombok.Setter;
+
 @Configuration
 @ConfigurationProperties(prefix = "ldap")
-public class LdapConfig {
-
+@Setter
+public class LdapConfiguration {
     private String url;
     private String base;
     private String userDn;
@@ -28,21 +30,5 @@ public class LdapConfig {
     @Bean
     public LdapTemplate ldapTemplate() {
         return new LdapTemplate(ldapContextSource());
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void setBase(String base) {
-        this.base = base;
-    }
-
-    public void setUserDn(String userDn) {
-        this.userDn = userDn;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

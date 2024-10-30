@@ -51,7 +51,7 @@ public class CalendarController {
     }
 
     @GetMapping("/{userId}/{calendarId}")
-    public ResponseEntity getCalender(@PathVariable("userId") String userId, @PathVariable("calendarId") String calendarId) {
+    public ResponseEntity<Object> getCalender(@PathVariable("userId") String userId, @PathVariable("calendarId") String calendarId) {
 
         User user = userDao.getUserById(userId);
         if (user == null || !user.getCalendarId().toString().equals(calendarId)) {

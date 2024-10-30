@@ -11,6 +11,10 @@ import java.util.Map;
  * upon add/update/delete operations on a location if the number of lockers change
  */
 public interface ILocationDao {
+    /**
+     * Check if a location with the given name exists.
+     */
+    Boolean existsLocationByName(String locationName);
 
     /**
      * Gets a location with the given id
@@ -79,5 +83,4 @@ public interface ILocationDao {
      * Initialize the fields of the location with all tags related data.
      */
     void initializeTags(Location location);
-
 }

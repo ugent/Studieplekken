@@ -30,9 +30,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private ILocationReservationDao locationReservationDao;
 
     @Autowired
-    private IPenaltyEventsDao penaltyEventsDao;
-
-    @Autowired
     private IPenaltyDao penaltyDao;
 
     @Autowired
@@ -56,10 +53,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private LocationReservation testLocationReservation1;
     private LocationReservation testLocationReservation2;
 
-
-    private Penalty testPenalty1;
-    private Penalty testPenalty2;
-
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
@@ -79,8 +72,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         testLocationReservation1 = new LocationReservation(testUser, cp1.get(0),  LocationReservation.State.APPROVED);
         testLocationReservation2 = new LocationReservation(testUser, cp2.get(0), LocationReservation.State.APPROVED);
-
-
 
         // Add test objects to database
         userDao.addUser(testUser);

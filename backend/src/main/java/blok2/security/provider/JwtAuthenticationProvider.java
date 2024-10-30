@@ -1,9 +1,10 @@
-package blok2.http.security.providers;
+package blok2.security.provider;
 
-import blok2.http.security.config.JwtAuthenticationToken;
-import blok2.http.security.services.JwtService;
-import blok2.http.security.services.JwtUserDetailService;
 import blok2.model.users.User;
+import blok2.security.services.JwtService;
+import blok2.security.services.JwtUserDetailService;
+import blok2.security.token.JwtAuthenticationToken;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,7 +23,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         this.detailService = detailService;
         this.jwtService = jwtService;
     }
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

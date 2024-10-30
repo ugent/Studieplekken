@@ -4,9 +4,9 @@ import blok2.database.dao.ILocationDao;
 import blok2.database.dao.ILocationReservationDao;
 import blok2.database.dao.ITimeslotDao;
 import blok2.extensions.helpers.Base64String;
-import blok2.http.security.authorization.AuthorizedLocationController;
 import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.mail.MailService;
+import blok2.http.controllers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -100,7 +100,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     public void deleteLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid LocationReservation locationReservation) {
         LocationReservation dbLocationReservation = locationReservationDao.getLocationReservation(locationReservation.getUser().getUserId(), locationReservation.getTimeslot());
 
-        isAuthorized(
+        checkAuthorization(
                 (lr, u) -> hasAuthority(dbLocationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
                 dbLocationReservation
         );

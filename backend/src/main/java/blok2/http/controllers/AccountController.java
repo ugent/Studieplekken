@@ -2,7 +2,7 @@ package blok2.http.controllers;
 
 import blok2.database.dao.*;
 import blok2.extensions.helpers.Base64String;
-import blok2.http.security.authorization.AuthorizedController;
+import blok2.http.controllers.authorization.AuthorizedController;
 import blok2.exceptions.InvalidRequestParametersException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
@@ -191,7 +191,7 @@ public class AccountController extends AuthorizedController {
                                    @PathVariable("userId") String encodedId,
                                    @RequestBody UserSettings userSettings) {
         String userId = Base64String.base64Decode(encodedId);
-        isAuthorized(
+        checkAuthorization(
                 (uid, u) -> uid.equals(u.getUserId()),
                 userId
         );
@@ -268,32 +268,5 @@ public class AccountController extends AuthorizedController {
         private String from;
         private String to;
         private User user;
-
-        public ChangePasswordBody() {
-        }
-
-        public String getFrom() {
-            return from;
-        }
-
-        public void setFrom(String from) {
-            this.from = from;
-        }
-
-        public String getTo() {
-            return to;
-        }
-
-        public void setTo(String to) {
-            this.to = to;
-        }
-
-        public User getUser() {
-            return user;
-        }
-
-        public void setUser(User user) {
-            this.user = user;
-        }
     }
 }
