@@ -75,6 +75,8 @@ custom:
       subject: "blokat-auth-service"
       baseurl: "http://localhost:8080"
   jwtKey: "${JWT_KEY:local-key}"
+  locations:
+    reservableThreshold: 50
 
 # SAML
 saml:

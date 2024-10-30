@@ -8,6 +8,7 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.location.Location;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,11 @@ import java.util.UUID;
 
 @Service
 public class TimeslotService implements ITimeslotDao {
+    private TimeslotRepository timeslotRepository;
+    private LocationService locationService;
 
-    private final TimeslotRepository timeslotRepository;
-    private final LocationService locationService;
+    @Value("${custom.locations.reservableThreshold}")
+    private int reservableSeatThreshold;
 
     @Autowired
     public TimeslotService(TimeslotRepository repo, LocationService locationService) {
@@ -61,7 +64,9 @@ public class TimeslotService implements ITimeslotDao {
 
             timeslot.setSeatCount(location.getNumberOfSeats());
 
-            if (location.getNumberOfSeats() > 50) {
+            // If the location has more than n seats,
+            // the timeslot should be reservable.
+            if (location.getNumberOfSeats() >= this.reservableSeatThreshold) {
                 timeslot.setReservable(true);
             }
 
@@ -81,7 +86,9 @@ public class TimeslotService implements ITimeslotDao {
             throw new NoSuchDatabaseObjectException("Location does not exist");
         }
 
-        if (location.getNumberOfSeats() > 50) {
+        // If the location has more than n seats,
+        // the timeslot should be reservable.
+        if (location.getNumberOfSeats() >= this.reservableSeatThreshold) {
             timeslot.setReservable(true);
         }
 
@@ -107,8 +114,10 @@ public class TimeslotService implements ITimeslotDao {
         if (original == null) throw new NoSuchDatabaseObjectException("Timeslot does not exist");
         if (location == null) throw new NoSuchDatabaseObjectException("Location does not exist");
 
-        if (location.getNumberOfSeats() > 50) {
-            timeslot.setReservable(true);
+        // If the location has more than n seats,
+        // the timeslot should be reservable.
+        if (location.getNumberOfSeats() >= this.reservableSeatThreshold) {
+            original.setReservable(true);
         }
 
         original.setTimeslotDate(timeslot.timeslotDate());

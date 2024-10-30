@@ -101,7 +101,6 @@ public abstract class BaseIntegrationTest extends BaseTest {
         locations.add(testLocation);
         unapprovedLocations.add(testLocationUnapproved);
 
-
         testLocationHoGent = TestSharedMethods.testLocation(authority.clone(), testBuildingHoGent);
         testLocationHoGent.setName("TestLocation HoGent");
         locationDao.addLocation(testLocationHoGent);

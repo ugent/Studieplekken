@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CustomFlywayConfig {
-
     @Bean
     public FlywayMigrationStrategy clean() {
         return flyway -> {
@@ -14,5 +13,4 @@ public class CustomFlywayConfig {
             flyway.migrate();
         };
     }
-
 }

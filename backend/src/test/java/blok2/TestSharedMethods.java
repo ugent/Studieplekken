@@ -71,6 +71,18 @@ public class TestSharedMethods {
         return testLocation3;
     }
 
+    public static Location testLocation4(Authority authority, Building building) {
+        Location testLocation4 = new Location();
+        testLocation4.setName("FourthTestLocation");
+        testLocation4.setNumberOfSeats(150);
+        testLocation4.setNumberOfLockers(5);
+        testLocation4.setImageUrl("https://example.com/picture.png");
+        testLocation4.setAuthority(authority);
+        testLocation4.setBuilding(building);
+        testLocation4.setForGroup(true);
+        return testLocation4;
+    }
+
     public static Building testBuilding() {
         Building testBuilding = new Building();
         testBuilding.setName("TestBuilding");

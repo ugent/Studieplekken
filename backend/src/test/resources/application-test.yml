@@ -10,3 +10,7 @@ spring:
     url: "jdbc:postgresql://localhost:5432/blokatugent_test"
     user: postgres
     password: postgres
+  
+custom:  
+  locations:
+    reservableThreshold: 50
