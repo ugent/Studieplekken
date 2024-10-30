@@ -8,6 +8,8 @@ import blok2.extension.mail.MailService;
 import blok2.extension.orm.LocationNameAndNextReservableFrom;
 import blok2.http.controllers.authorization.AuthorizedLocationController;
 import blok2.model.ActionLogEntry;
+import blok2.model.ActionLogEntry.Domain;
+import blok2.model.ActionLogEntry.Type;
 import blok2.model.location.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -47,18 +49,15 @@ public class LocationController extends AuthorizedLocationController {
 
     private final MailService mailService;
 
-    // *************************************
-    // *   CRUD operations for LOCATIONS   *
-    // *************************************
     @Autowired
     public LocationController(
-            ILocationDao locationDao, 
-            ILocationTagDao locationTagDao,
-            IVolunteerDao volunteerDao, 
-            MailService mailService, 
-            ILocationReservationDao locationReservationDao,
-            IActionLogDao actionLogDao, 
-            IUserLocationSubscriptionDao userLocationSubscriptionDao
+        ILocationDao locationDao, 
+        ILocationTagDao locationTagDao,
+        IVolunteerDao volunteerDao, 
+        MailService mailService, 
+        ILocationReservationDao locationReservationDao,
+        IActionLogDao actionLogDao, 
+        IUserLocationSubscriptionDao userLocationSubscriptionDao
     ) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
@@ -122,18 +121,23 @@ public class LocationController extends AuthorizedLocationController {
 
         // Add the location to the database.
         this.locationDao.addLocation(location);
+
+        // Log the action.
+        this.actionLogDao.addLogEntry(
+            new ActionLogEntry(Type.INSERTION, user, Domain.LOCATION, location.getLocationId())
+        );
     }
 
     @PutMapping("/{locationId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
-        actionLogDao.addLogEntry(new ActionLogEntry(
-                ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.LOCATION, locationId
-        ));
+        this.checkLocationAuthorization(locationId);
 
-        checkLocationAuthorization(locationId);
+        this.locationDao.updateLocation(location);
 
-        locationDao.updateLocation(location);
+        this.actionLogDao.addLogEntry(
+            new ActionLogEntry(Type.UPDATE, user, Domain.LOCATION, locationId)
+        );
     }
 
     @PutMapping("/{locationId}/approval")
@@ -191,10 +195,6 @@ public class LocationController extends AuthorizedLocationController {
         return volunteerDao.getVolunteers(locationId);
     }
 
-    // *****************************************
-    // *   CRUD operations for LOCATION_TAGS   *
-    // *****************************************
-
     /**
      * Following endpoint is a one-fits-all method: all tags that are supposed
      * to be set, must be provided in the body. Upon success only the tags
@@ -210,10 +210,6 @@ public class LocationController extends AuthorizedLocationController {
         locationTagDao.deleteAllTagsFromLocation(locationId);
         locationTagDao.bulkAddTagsToLocation(locationId, tagIds);
     }
-
-    // **************************************************
-    // *   Equality queries concerning locations   *
-    // **************************************************
 
     /**
      * Returns an array of 7 strings for each location that is opened in the week specified by the given

@@ -58,12 +58,10 @@ public class LocationControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/locations").with(csrf())
                 .content(objectMapper.writeValueAsBytes(testlocation3)).contentType("application/json"))
                 .andDo(print()).andExpect(status().isOk());
+
         Assert.assertTrue(hasActionLogEntry("admin", "location"));
-        //Assert.assertEquals(2, locationDao.getAllUnapprovedLocations().size());
         Assert.assertEquals(4, locationDao.getAllActiveLocations().size());
     }
-
-
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")

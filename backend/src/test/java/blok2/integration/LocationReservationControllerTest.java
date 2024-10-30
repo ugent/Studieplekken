@@ -352,6 +352,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         timeslot.setSeatCount(testLocation.getNumberOfSeats());
         timeslot.setTimeslotSeqnr((int) (Math.random() * 5000));
         timeslot = timeslotDAO.addTimeslot(timeslot);
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, timeslot, null));
 
         // Set the attendance to false now, so it is changed less than 24 hours ago which is when the previous unattendance mails were sent.
         locationReservationDao.setReservationAttendance(student2.getUserId(), timeslot, false);

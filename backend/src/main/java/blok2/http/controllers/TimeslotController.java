@@ -1,13 +1,20 @@
 package blok2.http.controllers;
 
+import blok2.database.dao.IActionLogDao;
 import blok2.database.dao.ITimeslotDao;
 import blok2.exception.InvalidRequestParametersException;
 import blok2.exception.NoSuchDatabaseObjectException;
 import blok2.http.controllers.authorization.AuthorizedLocationController;
+import blok2.model.ActionLogEntry;
+import blok2.model.ActionLogEntry.Domain;
+import blok2.model.ActionLogEntry.Type;
 import blok2.model.calendar.Timeslot;
+import blok2.model.users.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,12 +24,13 @@ import java.util.List;
 @RestController
 @RequestMapping("locations/timeslots")
 public class TimeslotController extends AuthorizedLocationController {
-    // The DAO for the timeslots.
     private final ITimeslotDao timeslotDAO;
+    private final IActionLogDao actionLogDao;
 
     @Autowired
-    public TimeslotController(ITimeslotDao calendarPeriodDao) {
+    public TimeslotController(ITimeslotDao calendarPeriodDao, IActionLogDao actionLogDao) {
         this.timeslotDAO = calendarPeriodDao;
+        this.actionLogDao = actionLogDao;
     }
 
     @GetMapping("/details/{timeslotId}")
@@ -47,11 +55,10 @@ public class TimeslotController extends AuthorizedLocationController {
 
     @PutMapping()
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public ResponseEntity<Object> updateTimeslot(@Valid @RequestBody Timeslot timeslot) {
+    public ResponseEntity<Object> updateTimeslot(@Valid @RequestBody Timeslot timeslot, @AuthenticationPrincipal User user) {
+        // Authorize user for current and next locations.
         Timeslot original = timeslotDAO.getTimeslot(timeslot.getTimeslotSeqnr());
-        // Validate original location
         this.checkLocationAuthorization(original.getLocationId());
-        // Validate future location
         this.checkLocationAuthorization(timeslot.getLocationId());
 
         // Check that new number of seats is not less than number of reservations
@@ -62,7 +69,12 @@ public class TimeslotController extends AuthorizedLocationController {
         }
 
         // Update the timeslot.
-        timeslotDAO.updateTimeslot(timeslot);
+        this.timeslotDAO.updateTimeslot(timeslot);
+
+        // Log the action.
+        this.actionLogDao.addLogEntry(
+            new ActionLogEntry(Type.UPDATE, user, Domain.LOCATION)
+        );
 
         return ResponseEntity.ok(timeslot);
     }
