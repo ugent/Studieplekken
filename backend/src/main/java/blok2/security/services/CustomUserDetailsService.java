@@ -1,4 +1,4 @@
-package blok2.http.security.services;
+package blok2.security.services;
 
 import blok2.database.dao.IUserDao;
 import blok2.exceptions.NoSuchDatabaseObjectException;

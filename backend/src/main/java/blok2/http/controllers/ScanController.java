@@ -1,7 +1,7 @@
 package blok2.http.controllers;
 
 import blok2.database.dao.ILocationDao;
-import blok2.http.security.authorization.AuthorizedLocationController;
+import blok2.http.controllers.authorization.AuthorizedLocationController;
 import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;

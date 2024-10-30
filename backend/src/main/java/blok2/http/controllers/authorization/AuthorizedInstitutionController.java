@@ -1,4 +1,4 @@
-package blok2.http.security.authorization;
+package blok2.http.controllers.authorization;
 
 import blok2.database.dao.IBuildingDao;
 import blok2.database.dao.ILocationDao;

@@ -21,7 +21,6 @@ import java.util.*;
 
 @Service
 public class LocationService implements ILocationDao {
-
     private final LocationRepository locationRepository;
     private final ITimeslotDao timeslotService;
 
@@ -29,6 +28,11 @@ public class LocationService implements ILocationDao {
     public LocationService(LocationRepository locationRepository, @Lazy ITimeslotDao timeslotService) {
         this.locationRepository = locationRepository;
         this.timeslotService = timeslotService;
+    }
+
+    @Override
+    public Boolean existsLocationByName(String locationName) {
+        return locationRepository.existsLocationByName(locationName);
     }
 
     @Override

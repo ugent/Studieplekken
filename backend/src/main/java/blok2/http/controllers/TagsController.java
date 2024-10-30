@@ -1,7 +1,7 @@
 package blok2.http.controllers;
 
 import blok2.database.dao.ILocationTagDao;
-import blok2.http.security.authorization.AuthorizedLocationController;
+import blok2.http.controllers.authorization.AuthorizedLocationController;
 import blok2.model.location.LocationTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,7 +69,7 @@ public class TagsController extends AuthorizedLocationController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void assignTagsToLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<LocationTag> tags) {
-        isAuthorized(locationId);
+        checkLocationAuthorization(locationId);
         List<Integer> lt = tags.stream().map(LocationTag::getTagId).collect(Collectors.toList());
         locationTagDao.deleteAllTagsFromLocation(locationId);
         locationTagDao.bulkAddTagsToLocation(locationId, lt);

@@ -2,7 +2,6 @@ package blok2.model;
 
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.persistence.*;
 import java.util.List;

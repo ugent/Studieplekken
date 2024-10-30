@@ -1,8 +1,9 @@
-package blok2.http.security.providers;
+package blok2.security.provider;
 
-import blok2.http.security.config.CustomAuthenticationToken;
-import blok2.http.security.services.BackdoorUserDetailService;
 import blok2.model.users.User;
+import blok2.security.services.BackdoorUserDetailService;
+import blok2.security.token.CustomAuthenticationToken;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

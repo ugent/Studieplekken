@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Integer> {
+    /**
+     * Check if a location with the given name exists.
+     */
+    Boolean existsLocationByName(String locationName);
 
     /**
      * Get a list of all active locations (i.e. those that are already approved).
@@ -56,5 +60,4 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
      * Get a list of objects that tell for each location what the next reservable from is.
      */
     List<LocationNameAndNextReservableFrom> getNextReservationMomentsOfAllLocations();
-
 }

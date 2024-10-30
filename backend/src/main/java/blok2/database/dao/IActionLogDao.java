@@ -13,7 +13,7 @@ public interface IActionLogDao {
     ActionLogEntry addLogEntry(ActionLogEntry entry);
 
     /**
-     * // TODO(ydndonck): Should probably only return a subset right? Should see if it becomes a problem maybe.
+     * Get all actions logged in the database.
      * @return : all actions logged in the database.
      */
     List<ActionLogEntry> getAllActions();

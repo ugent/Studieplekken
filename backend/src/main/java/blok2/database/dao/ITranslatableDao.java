@@ -1,11 +1,6 @@
 package blok2.database.dao;
 
-import blok2.model.translations.Language;
 import blok2.model.translations.Translatable;
-import blok2.model.translations.Translation;
-
-import java.util.List;
-import java.util.Map;
 
 public interface ITranslatableDao {
     /**

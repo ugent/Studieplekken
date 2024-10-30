@@ -1,7 +1,7 @@
 package blok2.http.controllers;
 
 import blok2.database.dao.IFaqCategoryDao;
-import blok2.http.security.authorization.AuthorizedController;
+import blok2.http.controllers.authorization.AuthorizedController;
 import blok2.model.FaqCategory;
 import blok2.model.FaqItem;
 import blok2.model.users.User;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("faq/categories")
