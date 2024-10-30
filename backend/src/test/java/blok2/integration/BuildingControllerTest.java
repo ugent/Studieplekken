@@ -1,6 +1,6 @@
 package blok2.integration;
 
-import blok2.extensions.helpers.Institution;
+import blok2.extension.helpers.Institution;
 import blok2.model.Building;
 import org.junit.Assert;
 import org.junit.Test;

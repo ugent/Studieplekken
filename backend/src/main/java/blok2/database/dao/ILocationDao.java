@@ -1,6 +1,6 @@
 package blok2.database.dao;
 
-import blok2.extensions.orm.LocationNameAndNextReservableFrom;
+import blok2.extension.orm.LocationNameAndNextReservableFrom;
 import blok2.model.location.Location;
 
 import java.util.List;

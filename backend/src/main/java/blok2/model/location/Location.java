@@ -1,9 +1,9 @@
 package blok2.model.location;
 
-import blok2.extensions.helpers.Equality;
-import blok2.extensions.helpers.LocationStatus;
-import blok2.extensions.helpers.Pair;
-import blok2.extensions.helpers.View;
+import blok2.extension.helpers.Equality;
+import blok2.extension.helpers.LocationStatus;
+import blok2.extension.helpers.Pair;
+import blok2.extension.helpers.View;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.Timeslot;

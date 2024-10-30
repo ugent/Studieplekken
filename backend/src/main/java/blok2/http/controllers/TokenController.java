@@ -1,12 +1,12 @@
 package blok2.http.controllers;
 
-import blok2.database.services.AuthProxy;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import blok2.database.service.AuthProxy;
 
 import java.net.URISyntaxException;
 

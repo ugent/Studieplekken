@@ -1,9 +1,9 @@
 package blok2.http.controllers;
 
 import blok2.database.dao.*;
-import blok2.extensions.helpers.Base64String;
+import blok2.exception.InvalidRequestParametersException;
 import blok2.http.controllers.authorization.AuthorizedController;
-import blok2.exceptions.InvalidRequestParametersException;
+import blok2.extension.helpers.Base64String;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.location.Location;

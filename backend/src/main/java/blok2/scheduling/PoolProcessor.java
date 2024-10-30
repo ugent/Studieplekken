@@ -1,7 +1,7 @@
 package blok2.scheduling;
 
-import blok2.database.repositories.LocationReservationRepository;
-import blok2.database.repositories.TimeslotRepository;
+import blok2.database.repository.LocationReservationRepository;
+import blok2.database.repository.TimeslotRepository;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.springframework.beans.factory.annotation.Autowired;

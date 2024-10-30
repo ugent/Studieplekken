@@ -2,9 +2,9 @@ package blok2;
 
 import blok2.database.dao.IAuthorityDao;
 import blok2.database.dao.IUserDao;
-import blok2.extensions.helpers.Institution;
+import blok2.exception.NoSuchDatabaseObjectException;
 import blok2.helpers.TimeException;
-import blok2.exceptions.NoSuchDatabaseObjectException;
+import blok2.extension.helpers.Institution;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.location.LocationTag;

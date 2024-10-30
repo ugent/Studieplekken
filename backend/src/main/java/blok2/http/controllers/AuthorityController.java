@@ -2,9 +2,9 @@ package blok2.http.controllers;
 
 import blok2.database.dao.IActionLogDao;
 import blok2.database.dao.IAuthorityDao;
-import blok2.extensions.helpers.Base64String;
-import blok2.exceptions.AlreadyExistsException;
-import blok2.exceptions.NoSuchDatabaseObjectException;
+import blok2.exception.AlreadyExistsException;
+import blok2.exception.NoSuchDatabaseObjectException;
+import blok2.extension.helpers.Base64String;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.location.Location;

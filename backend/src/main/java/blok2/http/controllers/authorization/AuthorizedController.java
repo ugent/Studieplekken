@@ -1,6 +1,6 @@
 package blok2.http.controllers.authorization;
 
-import blok2.exceptions.NotAuthorizedException;
+import blok2.exception.NotAuthorizedException;
 import blok2.model.users.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 

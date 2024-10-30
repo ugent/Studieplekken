@@ -50,28 +50,6 @@ server:
   servlet:
     context-path: /api
 
-# url sent to user for verification
-verification:
-  url: /verify
-  mail:
-    template: "ENGLISH VERSION BELOW\n\nBeste %s\n\nKlik op de volgende link om uw account te verifi�ren: %s\n\n---\n\nDear %s\n\nClick on this link to verify your account: %s"
-    subject: "UGent verificatie nieuw BlokAtUGent-account"
-
-# mail template to send to absent students
-absentStudents:
-  mail:
-    subject: "Afwezigheid voor reservatie/ Absence for reservation"
-    template: "ENGLISH VERSION BELOW\n\nBeste Student,\n\nU was afwezig voor uw reservatie vandaag.\nHiervoor heeft u strafpunten gekregen. Van zodra u te veel strafpunten heeft kan u geen reservaties meer maken\n\n---\n\nDear student,\n\nYou were absent for your reservation today.\nDue to this you have received penalty points. Please note that you can not make a reservation if you have too many penalty points."
-
-# CAS Authentication
-cas:
-  loginUrl: https://login.ugent.be
-  callbackUrl: https://localhost:8080/api/login/cas
-
-# Redirect url after successful login
-redirect:
-  successLoginRedirectUrl: https://localhost:4200/dashboard
-
 # LDAP Configuration
 ldap:
   url: "${LDAP_URL:}"
@@ -89,8 +67,6 @@ logging:
 
 # setting custom configuration
 custom:
-  mailing:
-    recipientsOpeningHoursOverview: ""
   stadgent:
     url: "https://studieplekken-dev.ugent.be/"
   services:
@@ -102,15 +78,7 @@ custom:
 
 # SAML
 saml:
-  keystore:
-    location: "${SAML_KEYSTORE_PATH:classpath:/keystore/samlKeystore-tests.jks}"
-    password: "${SAML_KEYSTORE_PASSWORD:blokat-tests}"
-    alias: blokat
-  idp: http://www.okta.com/exk15hzmbtaSjzq1E5d7
   sp: https://localhost:8080/api/metadata/saml
   sp-metadata: classpath:/saml/metadata/spring_saml_metadata.xml
   server-name: localhost:8080
   entity-base-url: https://localhost:8080/api
-  idps:
-    hoGent: https://idp.hogent.be/idp
-    arteveldeHS: https://sts.windows.net/b6e080ea-adb9-4c79-9303-6dcf826fb854/

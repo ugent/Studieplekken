@@ -2,7 +2,7 @@ package blok2.http.controllers;
 
 import blok2.database.dao.IActionLogDao;
 import blok2.database.dao.IBuildingDao;
-import blok2.exceptions.NotAuthorizedException;
+import blok2.exception.NotAuthorizedException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Building;
 import blok2.model.users.User;

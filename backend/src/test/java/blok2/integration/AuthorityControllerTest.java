@@ -1,6 +1,6 @@
 package blok2.integration;
 
-import blok2.extensions.helpers.Base64String;
+import blok2.extension.helpers.Base64String;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;

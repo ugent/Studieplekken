@@ -1,8 +1,8 @@
 package blok2.http.controllers;
 
 import blok2.database.dao.ITimeslotDao;
-import blok2.exceptions.InvalidRequestParametersException;
-import blok2.exceptions.NoSuchDatabaseObjectException;
+import blok2.exception.InvalidRequestParametersException;
+import blok2.exception.NoSuchDatabaseObjectException;
 import blok2.http.controllers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("locations/timeslots")
 public class TimeslotController extends AuthorizedLocationController {
-
+    // The DAO for the timeslots.
     private final ITimeslotDao timeslotDAO;
 
     @Autowired
