@@ -33,16 +33,8 @@ server:
 
 debug: false
 
-cas:
-  callbackUrl: https://studieplekken.ugent.be/api/login/cas
-
-redirect:
-  successLoginRedirectUrl: https://studieplekken.ugent.be/dashboard
-
 # setting custom configuration
 custom:
-  mailing:
-    recipientsOpeningHoursOverview: "alarmbeheer@ugent.be,permanentie@ugent.be,schoonmaak@ugent.be,veiligheid@ugent.be"
   stadgent:
     url: "https://bloklocaties.stad.gent/"
   services:

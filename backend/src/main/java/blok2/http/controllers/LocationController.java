@@ -1,12 +1,12 @@
 package blok2.http.controllers;
 
 import blok2.database.dao.*;
-import blok2.extensions.helpers.LocationWithApproval;
-import blok2.extensions.helpers.View;
-import blok2.exceptions.AlreadyExistsException;
-import blok2.extensions.orm.LocationNameAndNextReservableFrom;
+import blok2.exception.AlreadyExistsException;
+import blok2.extension.helpers.LocationWithApproval;
+import blok2.extension.helpers.View;
+import blok2.extension.mail.MailService;
+import blok2.extension.orm.LocationNameAndNextReservableFrom;
 import blok2.http.controllers.authorization.AuthorizedLocationController;
-import blok2.extensions.mail.MailService;
 import blok2.model.ActionLogEntry;
 import blok2.model.location.Location;
 import blok2.model.reservations.LocationReservation;

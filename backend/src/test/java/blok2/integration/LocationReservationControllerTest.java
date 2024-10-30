@@ -1,7 +1,7 @@
 package blok2.integration;
 
 import blok2.TestSharedMethods;
-import blok2.extensions.helpers.Base64String;
+import blok2.extension.helpers.Base64String;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;

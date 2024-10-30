@@ -1,6 +1,6 @@
 package blok2.scheduling;
 
-import blok2.database.repositories.LocationReservationRepository;
+import blok2.database.repository.LocationReservationRepository;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.springframework.stereotype.Service;

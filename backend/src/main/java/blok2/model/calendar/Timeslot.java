@@ -1,10 +1,12 @@
 package blok2.model.calendar;
 
-import blok2.extensions.orm.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
+import blok2.extension.orm.CustomLocalDateTimeSerializer;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.persistence.*;

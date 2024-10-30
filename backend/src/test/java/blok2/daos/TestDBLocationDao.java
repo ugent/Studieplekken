@@ -6,7 +6,7 @@ import blok2.database.dao.IAuthorityDao;
 import blok2.database.dao.IBuildingDao;
 import blok2.database.dao.ILocationDao;
 import blok2.database.dao.ITimeslotDao;
-import blok2.exceptions.NoSuchDatabaseObjectException;
+import blok2.exception.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.Timeslot;
