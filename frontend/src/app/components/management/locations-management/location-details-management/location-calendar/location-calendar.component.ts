@@ -12,19 +12,19 @@ import {CalendarView} from 'angular-calendar';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {ReplaySubject, Subject} from 'rxjs';
-import {TimeslotsService} from 'src/app/services/api/calendar-periods/timeslot.service';
-import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
-import {Suggestion, TimeslotGroupService} from 'src/app/services/timeslots/timeslot-group/timeslot-group.service';
+import { TimeslotsService } from '@/services/api/calendar-periods/timeslot.service';
+import { LocationReservationsService } from '@/services/api/location-reservations/location-reservations.service';
+import {Suggestion, TimeslotGroupService} from '@/services/timeslots/timeslot-group/timeslot-group.service';
 import {
     TimeslotCalendarEvent,
     TimeslotCalendarEventService
-} from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
+} from '@/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
 
-import {Location} from 'src/app/model/Location';
-import {LocationReservation} from 'src/app/model/LocationReservation';
-import {Timeslot} from 'src/app/model/Timeslot';
-import {booleanSorter} from 'src/app/util/Util';
-import {ModalComponent} from '../../../../stad-gent-components/molecules/modal/modal.component';
+import {Location} from '@/model/Location';
+import {LocationReservation} from '@/model/LocationReservation';
+import {Timeslot} from '@/model/Timeslot';
+import {booleanSorter} from '@/util/Util';
+import {ModalComponent} from '@/components/stad-gent-components/molecules/modal/modal.component';
 import {
     LocationAddTimeslotDialogComponent
 } from './location-add-timeslot-dialog/location-add-timeslot-dialog.component';

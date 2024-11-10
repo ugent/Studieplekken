@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
-import {Timeslot} from 'src/app/model/Timeslot';
-import {Location} from 'src/app/model/Location';
+import {Timeslot} from '@/model/Timeslot';
+import {Location} from '@/model/Location';
 import {ModalComponent} from '@/components/stad-gent-components/molecules/modal/modal.component';
 
 @Component({
@@ -31,7 +31,7 @@ export class LocationAddTimeslotDialogComponent implements OnChanges {
 
     protected _timeslot: Timeslot = new Timeslot();
 
-    ngOnChanges(changes: SimpleChanges): void {
+    public ngOnChanges(changes: SimpleChanges): void {
         if (changes.location || changes.timeslot) {
             // We take a copy of the input timeslot to prevent updating the prop!
             const input = this.timeslot;
@@ -50,13 +50,8 @@ export class LocationAddTimeslotDialogComponent implements OnChanges {
                 input?.repeatable ?? false
             );
 
-            this.setupForm(timeslot);
+            this._timeslot = timeslot;
         }
-    }
-
-    setupForm(timeslot: Timeslot = this.timeslot): void {
-        console.log(timeslot);
-        this._timeslot = timeslot;
     }
 
     getMinStartDate(): Moment {

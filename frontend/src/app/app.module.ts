@@ -189,6 +189,7 @@ import { ContactComponent } from './components/stad-gent-components/molecules/co
 import { NotFoundErrorPageComponent } from './components/error-pages/not-found-error-page/not-found-error-page.component';
 import { UnauthorizedErrorPageComponent } from './components/error-pages/unauthorized-error-page/unauthorized-error-page.component';
 import { CallToActionComponent } from './components/stad-gent-components/call-to-action/call-to-action.component';
+import { CheckboxComponent } from './components/stad-gent-components/molecules/forms/checkbox/checkbox.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -524,6 +525,7 @@ const routes: Routes = [
         NotFoundErrorPageComponent,
         UnauthorizedErrorPageComponent,
         CallToActionComponent,
+        CheckboxComponent,
     ],
     imports: [
         BrowserModule,
