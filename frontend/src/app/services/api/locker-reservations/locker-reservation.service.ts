@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LockerReservation } from '../../../../model/LockerReservation';
+import { LockerReservation } from '@/model/LockerReservation';
 import { api } from '../endpoints';
 
 @Injectable({

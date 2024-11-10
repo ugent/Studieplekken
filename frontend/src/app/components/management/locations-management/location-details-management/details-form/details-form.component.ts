@@ -33,11 +33,11 @@ export class DetailsFormComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.setupForm();
     }
 
-    setupForm(): void {
+    public setupForm(): void {
         this.formGroup = new FormGroup({
             name: new FormControl(this.location.name),
             authority: new FormControl(this.location.authority.authorityId),
@@ -52,33 +52,33 @@ export class DetailsFormComponent implements OnInit {
         this.disableFormGroup();
     }
 
-    disableFormGroup(): void {
+    public disableFormGroup(): void {
         this.formGroup.disable();
     }
 
-    enableFormGroup(): void {
+    public enableFormGroup(): void {
         this.formGroup.enable();
     }
 
-    toggleFormButtons(): void {
+    public toggleFormButtons(): void {
         this.disableEditLocationButton = !this.disableEditLocationButton;
         this.disableCancelLocationButton = !this.disableCancelLocationButton;
         this.disablePersistLocationButton = !this.disablePersistLocationButton;
     }
 
-    editLocationDetailsButtonClick(): void {
+    public editLocationDetailsButtonClick(): void {
         this.enableFormGroup();
         this.toggleFormButtons();
     }
 
-    cancelLocationDetailsButtonClick(): void {
+    public cancelLocationDetailsButtonClick(): void {
         this.setupForm();
         this.toggleFormButtons();
 
         this.successUpdatingLocation = undefined;
     }
 
-    persistLocationDetailsButtonClick(): void {
+    public persistLocationDetailsButtonClick(): void {
         this.successUpdatingLocation = null; // show 'loading' message
 
         const from = this.location;
@@ -107,28 +107,28 @@ export class DetailsFormComponent implements OnInit {
 
     get locationInForm(): Location {
         const formValue = this.formGroup.value;
-        const location: Location = LocationConstructor.newFromObj(
-            this.location
-        );
 
-        location.name = String(formValue.name);
-        location.authority = this.authorities.find(authority =>
-            authority.authorityId === formValue.authority
-        );
-        location.building = this.buildings.find(building =>
-            building.buildingId === Number(formValue.building)
-        );
-        location.numberOfSeats = Number(formValue.numberOfSeats);
-        location.numberOfLockers = Number(formValue.numberOfLockers);
-        location.forGroup = Boolean(formValue.forGroup);
-        location.imageUrl = String(formValue.imageUrl);
-        location.usesPenaltyPoints = Boolean(formValue.usesPenaltyPoints);
-        location.hidden = Boolean(formValue.hidden);
+        const location: Location = LocationConstructor.newFromObj({
+            ...this.location,
+            name: String(formValue.name),
+            authority: this.authorities.find(authority =>
+                authority.authorityId === formValue.authority
+            ),
+            building: this.buildings.find(building =>
+                building.buildingId === Number(formValue.building)
+            ),
+            numberOfSeats: Number(formValue.numberOfSeats),
+            numberOfLockers: this.location.numberOfLockers,
+            forGroup: Boolean(formValue.forGroup),
+            imageUrl: String(formValue.imageUrl),
+            usesPenaltyPoints: Boolean(formValue.usesPenaltyPoints),
+            hidden: Boolean(formValue.hidden)
+        });
 
         return location;
     }
 
-    successHandler(): void {
+    protected successHandler(): void {
         this.successUpdatingLocation = true;
 
         setTimeout(
@@ -137,7 +137,7 @@ export class DetailsFormComponent implements OnInit {
         );
     }
 
-    errorHandler(): void {
+    protected errorHandler(): void {
         this.successUpdatingLocation = false;
 
         setTimeout(

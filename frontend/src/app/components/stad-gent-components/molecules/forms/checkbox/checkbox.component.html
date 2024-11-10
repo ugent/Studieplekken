@@ -1,0 +1,23 @@
+<div class="checkbox" [ngClass]="variant">
+    <input 
+        type="checkbox"
+        class="checkbox"
+        [id]="id"
+        [ngClass]="variant" 
+        [disabled]="isDisabled"
+        [checked]="isChecked"
+        (change)="onCheckedChange($event.target.checked)" />
+    <label [for]="id">{{ label }}</label>
+
+    <!-- Optional description based on variant -->
+    <div *ngIf="description && variant !== 'default'" class="field-message" [ngClass]="variant">
+        {{ description }}
+        <div class="accolade"></div>
+    </div>
+
+    <!-- Optional validation message based on variant -->
+    <div *ngIf="message && variant !== 'default'" class="field-message" [ngClass]="variant" role="alert">
+        {{ message }}
+        <div class="accolade"></div>
+    </div>
+</div>

@@ -55,18 +55,6 @@
             </div>
         </div>
 
-        <!-- Uses penalty points -->
-        <div class="row">
-            <div class="col">
-                <div class="form-group">
-                    <label class="control-label" for="usesPenaltyPoints">
-                        <input class="form-control" id="usesPenaltyPoints" type="checkbox" formControlName="usesPenaltyPoints">
-                        {{'management.locationDetails.form.usesPenaltyPoints' | translate}}
-                    </label>
-                </div>
-            </div>
-        </div>
-
         <!-- Image URL -->
         <div class="row">
             <div class="col">
@@ -79,14 +67,28 @@
             </div>
         </div>
 
+        <!-- Uses penalty points -->
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <app-checkbox
+                        [id]="'usesPenaltyPoints'"
+                        [label]="'management.locationDetails.form.usesPenaltyPoints' | translate"
+                        [formControlName]="'usesPenaltyPoints'">
+                    </app-checkbox>
+                </div>
+            </div>
+        </div>
+
         <!-- Should the location be hidden in the overview? -->
         <div class="row">
             <div class="col">
                 <div class="form-group">
-                    <label class="control-label" for="hidden">
-                        <input class="form-control" id="hidden" type="checkbox" formControlName="hidden">
-                        {{'management.locationDetails.form.isHidden' | translate}}
-                    </label>
+                    <app-checkbox
+                        [id]="'hidden'"
+                        [label]="'management.locationDetails.form.isHidden' | translate"
+                        [formControlName]="'hidden'">
+                    </app-checkbox>
                 </div>
             </div>
         </div>
