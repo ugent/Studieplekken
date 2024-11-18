@@ -10,7 +10,9 @@
             <h2>
                 {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
             </h2>
+            
             <hr>
+
             <app-details-form
                 [location]="location"
                 [authorities]="context.authorities"
@@ -21,7 +23,9 @@
             <h2>
                 {{'management.locationDetails.calendar.title' | translate}}
             </h2>
+
             <hr/>
+
             <app-location-calendar
                 [location]="location"
                 [timeslots]="context.timeslots"
@@ -32,7 +36,9 @@
             <h2>
                 {{'management.locationDetails.tags.title' | translate}}
             </h2>
+
             <hr/>
+
             <app-location-tags-management
                 [location]="locationObs$">
             </app-location-tags-management>
@@ -41,7 +47,9 @@
             <h2>
                 {{'management.locationDetails.description.title' | translate}}
             </h2>
+
             <hr/>
+
             <app-location-description
                 [location]="locationObs$">
             </app-location-description>
@@ -50,7 +58,9 @@
             <h2>
                 {{'management.locationDetails.reminder.title' | translate}}
             </h2>
+            
             <hr/>
+            
             <app-location-reminder
                 [location]="locationObs$">
             </app-location-reminder>

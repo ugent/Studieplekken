@@ -1,10 +1,44 @@
-<label>
-    <input
-      class="form-control input-{{this.model === null}}"
-      [type]="type"
-      [(ngModel)]="modelAsString"
-      (ngModelChange)="onNewDate()"
-      [min]="minAsString"
-      [max]="maxAsString"
-    />
-</label>
+<ng-container *ngIf="type === 'datetime'">
+    <div class="d-flex gap-3">
+        <!-- Date input -->
+        <input 
+            class="form-control" 
+            type="date" 
+            [value]="getFormattedValue(dateOrTimeValue, 'YYYY-MM-DD')" 
+            [min]="getFormattedValue(min, 'YYYY-MM-DD')"
+            [max]="getFormattedValue(max, 'YYYY-MM-DD')" 
+            [disabled]="isDisabled" 
+            (input)="handleInputChange($event, 'date')"
+            (blur)="onDateOrTimeTouched()" />
+        <!-- Time input -->
+        <input 
+            class="form-control" 
+            type="time" 
+            [value]="getFormattedValue(dateOrTimeValue, 'HH:mm')"
+            [disabled]="isDisabled" 
+            (input)="handleInputChange($event, 'time')" 
+            (blur)="onDateOrTimeTouched()" />
+    </div>
+</ng-container>
+
+<ng-container *ngIf="type === 'date'">
+    <input 
+        class="form-control" 
+        type="date"
+        [value]="getFormattedValue(dateOrTimeValue, 'YYYY-MM-DD')" 
+        [min]="getFormattedValue(min, 'YYYY-MM-DD')"
+        [max]="getFormattedValue(max, 'YYYY-MM-DD')" 
+        [disabled]="isDisabled" 
+        (input)="handleInputChange($event, 'date')"
+        (blur)="onDateOrTimeTouched()" />
+</ng-container>
+
+<ng-container *ngIf="type === 'time'">
+    <input 
+        class="form-control" 
+        type="time" 
+        [value]="getFormattedValue(dateOrTimeValue, 'HH:mm')" 
+        [disabled]="isDisabled"
+        (input)="handleInputChange($event, 'time')" 
+        (blur)="onDateOrTimeTouched()" />
+</ng-container>

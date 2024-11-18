@@ -13,13 +13,13 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class CheckboxComponent implements ControlValueAccessor {
     @Input() variant: 'default' | 'error' | 'success' = 'default';
-    @Input() label: string;
     @Input() id: string = 'checkbox-id';
+    @Input() label: string;
     @Input() description: string | null = null;
     @Input() message: string | null = null;
 
-    protected isDisabled: boolean = true;
-    protected isChecked: boolean = true;
+    protected isDisabled: boolean = false;
+    protected isChecked: boolean = false;
     protected onCheckedChange: (checked: boolean) => void;
     protected onCheckedTouched: () => void;
 

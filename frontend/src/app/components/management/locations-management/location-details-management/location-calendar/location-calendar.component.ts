@@ -204,7 +204,7 @@ export class LocationCalendarComponent implements OnChanges {
         this.copyModal.open();
     }
 
-    storeAdd(timeslot: Timeslot): void {
+    storeAddTimeslot(timeslot: Timeslot): void {
         this.isSuccess = undefined;
 
         this.timeslotService.addTimeslot(timeslot).subscribe(() => {
@@ -217,7 +217,7 @@ export class LocationCalendarComponent implements OnChanges {
         this.modifyModal.closeModal();
     }
 
-    storeUpdate(timeslot: Timeslot): void {
+    storeUpdateTimeslot(timeslot: Timeslot): void {
         this.isSuccess = undefined;
 
         this.timeslotService.updateTimeslot(timeslot).subscribe(() => {

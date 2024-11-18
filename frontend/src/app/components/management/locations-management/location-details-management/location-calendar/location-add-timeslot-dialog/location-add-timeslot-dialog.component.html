@@ -3,18 +3,30 @@
     <h2 modal-header *ngIf="!isUpdating()">
         {{'management.locationDetails.calendar.addModalView.title' | translate}}
     </h2>
+
     <h2 modal-header *ngIf="isUpdating()">
         {{'management.locationDetails.calendar.updateModalView.title' | translate}}
     </h2>
 
     <div modal-body>
-        <form>
+        <ng-container *ngIf="lockReservable()">
+            <div class="messages messages--info" role="alert" aria-atomic="true">
+                <i class="icon icon-info"></i>
+                <p>{{ ('management.locationDetails.calendar.addModalView.thresholdMessage' | translate).replace('{seatThreshold}', seatThreshold) }}</p>
+            </div>
+        </ng-container>
+        <form [formGroup]="timeslotFormGroup">
             <!-- Starts at -->
             <div class="row">
                 <div class="col">
                     <label class="control-label" for="startsAt">
                         {{'management.locationDetails.calendar.form.date' | translate}}
-                        <app-moment-date id="startsAt" [(model)]="_timeslot.timeslotDate" [type]="'date'" [min]="getMinStartDate()"></app-moment-date>
+                        <app-moment-date 
+                            id="startsAt"
+                            type="date"
+                            formControlName="timeslotDate"
+                            [min]="getMinStartDate()">
+                        </app-moment-date>
                     </label>
                 </div>
             </div>
@@ -24,7 +36,11 @@
                 <div class="col">
                     <label class="control-label" for="openingTime">
                         {{'management.locationDetails.calendar.form.openingTime' | translate}}
-                        <app-moment-date id="openingTime" [(model)]="_timeslot.openingHour" [type]="'time'"></app-moment-date>
+                        <app-moment-date 
+                            type="time"
+                            id="openingHour"
+                            formControlName="openingHour">
+                        </app-moment-date>
                     </label>
                 </div>
             </div>
@@ -34,7 +50,12 @@
                 <div class="col">
                     <label class="control-label" for="closingTime">
                         {{'management.locationDetails.calendar.form.closingTime' | translate}}
-                        <app-moment-date id="closingTime" [(model)]="_timeslot.closingHour" [type]="'time'" [min]="_timeslot.openingHour"></app-moment-date>
+                        <app-moment-date
+                            type="time"
+                            id="closingTime"
+                            formControlName="closingHour"
+                            [min]="getMinClosingTime()">
+                        </app-moment-date>
                     </label>
                 </div>
             </div>
@@ -42,69 +63,83 @@
             <!-- Repeat -->
             <div class="row">
                 <div class="col">
-                    <input id="repeatable" type="checkbox" [(ngModel)]="_timeslot.repeatable" name="repeatable" /> {{'management.locationDetails.calendar.form.repeatable' | translate}}
+                    <app-checkbox
+                        formControlName="repeatable"
+                        [id]="'repeatable'"
+                        [label]="'management.locationDetails.calendar.form.repeatable' | translate">
+                    </app-checkbox>
                 </div>
             </div>
 
             <!-- Reservable -->
             <div class="row">
                 <div class="col">
-                    <input id="reservable" type="checkbox" [(ngModel)]="_timeslot.reservable" name="reservable" /> {{'management.locationDetails.calendar.form.reservable' | translate}}
+                    <div class="d-flex align-items-center gap-2">
+                        <app-checkbox
+                            formControlName="reservable"
+                            [id]="'reservable'"
+                            [label]="'management.locationDetails.calendar.form.reservable' | translate">
+                        </app-checkbox>
+                    </div>
                 </div>
             </div>
 
-            <!-- Reservable from -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="reservableFrom">
-                        {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
-                        <app-moment-datetime id="reservableFrom"
-                                             [(model)]="_timeslot.reservableFrom"
-                                             [disabled]="!_timeslot.reservable"
-                                             [min]="getMinReservableFrom(_timeslot)"
-                                             [max]="_timeslot.timeslotDate">
-                        </app-moment-datetime>
-                    </label>
+            <ng-container *ngIf="timeslotFormGroup.get('reservable').value">
+                <!-- Reservable from -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="reservableFrom">
+                            {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
+                            <app-moment-date 
+                                id="reservableFrom"
+                                formControlName="reservableFrom"
+                                type="datetime"
+                                [min]="getMinReservableFrom()"
+                                [max]="getMaxReservableFrom()">
+                            </app-moment-date>
+                        </label>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Seat count -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="seatCount">
-                        {{'management.locationDetails.calendar.form.numberOfSeats' | translate}}
-                        <input id="seatCount" type="number"
-                               [(ngModel)]="_timeslot.seatCount"
-                               [min]="_timeslot.amountOfReservations + 30"
-                               [disabled]="!_timeslot.reservable" name="seatCount"
-                        />
-                    </label>
+                <!-- Seat count -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="seatCount">
+                            {{'management.locationDetails.calendar.form.numberOfSeats' | translate}}
+                            <input
+                                type="number"
+                                name="seatCount"
+                                formControlName="seatCount"
+                                [min]="getMinSeatCount()"/>
+                        </label>
+                    </div>
                 </div>
-            </div>
+            </ng-container>
         </form>
     </div>
 
     <div modal-footer>
-        <button class="button button-primary" (click)="confirm()" [disabled]="!_timeslot.isValid()" *ngIf="!isUpdating()">
+        <button class="button button-primary" (click)="confirm()" [disabled]="!timeslotInstance.isValid()" *ngIf="!isUpdating()">
             {{'general.buttons.add' | translate}}
         </button>
 
-        <button class="button button-primary" (click)="confirm()" [disabled]="!_timeslot.isValid()" *ngIf="isUpdating()">
+        <button class="button button-primary" (click)="confirm()" [disabled]="!timeslotInstance.isValid()" *ngIf="isUpdating()">
             {{'general.buttons.update' | translate}}
         </button>
 
-        <button type="button" class="button button-secondary" (click)="closeModal()">
+        <button type="button" class="button button-secondary" (click)="modal.close()">
             {{'general.buttons.cancel' | translate}}
         </button>
     </div>
+
     <div modal-message-footer>
-        <div *ngIf="_displayErrorTime">
+        <div *ngIf="displayErrorTime">
             <div class="messages messages--warning">
                 <i class="icon-exclamation"></i>
                 {{'management.locationDetails.calendar.form.openingClosingHourError' | translate}}
             </div>
         </div>
-        <div *ngIf="_displayErrorSeats">
+        <div *ngIf="displayErrorSeats">
             <div class="messages messages--warning">
                 <i class="icon-exclamation"></i>
                 {{('management.locationDetails.calendar.form.seatsError' | translate).replace('{amountOfReservations}', _timeslot.amountOfReservations) }}
