@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Location, LocationConstructor} from '@/model/Location';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '@/services/api/locations/location.service';
 import {
     LocationDetailsService
@@ -29,8 +29,19 @@ export class DetailsFormComponent implements OnInit {
 
     constructor(
         private locationService: LocationService,
-        private locationDetailsService: LocationDetailsService
+        private locationDetailsService: LocationDetailsService,
+        private formBuilder: FormBuilder
     ) {
+        this.formGroup = this.formBuilder.group({
+            name: null,
+            authority: null,
+            building: null,
+            numberOfSeats: null,
+            forGroup: null,
+            imageUrl: null,
+            usesPenaltyPoints: null,
+            hidden: null
+        });
     }
 
     public ngOnInit(): void {
@@ -38,15 +49,15 @@ export class DetailsFormComponent implements OnInit {
     }
 
     public setupForm(): void {
-        this.formGroup = new FormGroup({
-            name: new FormControl(this.location.name),
-            authority: new FormControl(this.location.authority.authorityId),
-            building: new FormControl(this.location.building.buildingId),
-            numberOfSeats: new FormControl(this.location.numberOfSeats),
-            forGroup: new FormControl(this.location.forGroup),
-            imageUrl: new FormControl(this.location.imageUrl),
-            usesPenaltyPoints: new FormControl(this.location.usesPenaltyPoints),
-            hidden: new FormControl(this.location.hidden)
+        this.formGroup.patchValue({
+            name: this.location.name,
+            authority: this.location.authority.authorityId,
+            building: this.location.building.buildingId,
+            numberOfSeats: this.location.numberOfSeats,
+            forGroup: this.location.forGroup,
+            imageUrl: this.location.imageUrl,
+            usesPenaltyPoints: this.location.usesPenaltyPoints,
+            hidden: this.location.hidden
         });
 
         this.disableFormGroup();

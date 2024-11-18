@@ -402,7 +402,8 @@
                 "addModalView": {
                     "title": "Nieuw tijdslot toevoegen",
                     "success": "Het toevoegen van de nieuwe tijdsloten is gelukt.",
-                    "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe tijdsloten."
+                    "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe tijdsloten.",
+                    "thresholdMessage": "Vanaf {seatThreshold} plaatsen zijn locaties altijd reserveerbaar. Dit is puur administratief, de locatie kan zelf kiezen of de reservaties effectief gecontroleerd worden."
                 },
                 "updateModalView": {
                     "title": "Wijzigen van een tijdslot",

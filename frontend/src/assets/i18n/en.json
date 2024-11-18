@@ -455,7 +455,8 @@
                 "addModalView": {
                     "title": "Add new timeslot",
                     "success": "Successfully added the new timeslot",
-                    "error": "Something went wrong while adding the new timeslot"
+                    "error": "Something went wrong while adding the new timeslot",
+                    "thresholdMessage": "From {seatThreshold} available seats, we automatically enable locations to be reservable. This is pure administrative, the location can choose if these reservations are checked or not."
                 },
                 "updateModalView": {
                     "title": "Update a timeslot",

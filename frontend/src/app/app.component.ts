@@ -70,7 +70,7 @@ export class AppComponent implements OnInit {
      * @returns {boolean}
      */
     shouldShowAlert(message: string): boolean {
-        return localStorage.getItem(message) === null;
+        return false && localStorage.getItem(message) === null;
     }
 
     /**

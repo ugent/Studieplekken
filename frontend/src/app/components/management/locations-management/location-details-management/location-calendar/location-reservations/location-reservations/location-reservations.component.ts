@@ -36,7 +36,7 @@ export class LocationReservationsComponent implements OnChanges {
     @Input() currentTimeSlot: Timeslot;
     @Input() lastScanned?: LocationReservation;
 
-    @Input() isManagement = true; // enable some functionality that should not be enabled for volunteers in the Scan page
+    @Input() isManagement = true;
 
     @Output() reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
 
@@ -218,7 +218,6 @@ export class LocationReservationsComponent implements OnChanges {
         if (!locationReservations) {
             return [];
         }
-        console.log('Start of filter: ' + performance.now());
 
         locationReservations = locationReservations.filter(
             (r) => r.state !== LocationReservationState.DELETED && r.state !== LocationReservationState.REJECTED
@@ -261,8 +260,6 @@ export class LocationReservationsComponent implements OnChanges {
                 a.user.lastName.localeCompare(b.user.lastName)
             );
         });
-
-        console.log('End of filter: ' + performance.now());
 
         return locationReservations;
     }

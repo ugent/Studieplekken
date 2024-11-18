@@ -5,6 +5,7 @@
             <button class="mx-auto button button-secondary pull-center" (click)="prepareAdd()">
                 + {{'management.locationDetails.calendar.form.addButton' | translate}}
             </button>
+
             <!-- Calendar -->
             <ng-container *ngIf="events">
                 <app-calendar
@@ -16,6 +17,7 @@
                       (calendarViewStyle)="calendarViewStyle">
                 </app-calendar>
             </ng-container>
+
             <div class="d-flex gap-3 align-items-center my-3">
                 <ng-container *ngIf="getCurrentSuggestions().length">
                     <button class="button button-primary alert" (click)="rejectAll()">
@@ -68,8 +70,8 @@
     <app-location-add-timeslot-dialog
         [location]="location"
         [timeslot]="selected"
-        (onNewTimeslot)="storeAdd($event)"
-        (onUpdateTimeslot)="storeUpdate($event)" #addTimeslotModal>
+        (onNewTimeslot)="storeAddTimeslot($event)"
+        (onUpdateTimeslot)="storeUpdateTimeslot($event)" #addTimeslotModal>
     </app-location-add-timeslot-dialog>
 
     <!-- Modal view to ask whether the user is sure to delete a timeslot -->
