@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {combineLatest, interval, Observable, Subscription} from 'rxjs';
 import {LocationService} from '@/services/api/locations/location.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '@/model/User';
 import {Location} from '@/model/Location';
 import {AuthenticationService} from '@/services/authentication/authentication.service';
@@ -19,6 +19,7 @@ import {tap} from 'rxjs/operators';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
 import {AfterReservationComponent} from './after-reservation/after-reservation.component';
 import {Authority} from '@/model/Authority';
+import { LoginRedirectService } from '@/services/authentication/login-redirect.service';
 
 @Component({
     selector: 'app-location-reservation',
@@ -54,49 +55,19 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         private breadcrumbService: BreadcrumbService,
         private translateService: TranslateService,
+        private loginRedirectService: LoginRedirectService,
+        private router: Router,
         private route: ActivatedRoute
     ) {
         this.language = translateService.currentLang;
         this.subscription = new Subscription();
     }
 
-    ngOnInit(): void {
-        const locationID = Number(
-            this.route.snapshot.paramMap.get('locationId')
-        );
+    public ngOnInit(): void {
+        // Get the location ID from the route.
+        const locationID = Number(this.route.snapshot.paramMap.get('locationId'));
 
-        // Fetch the context.
-        this.setupSubscriptions();
-
-        this.contextSub$ = combineLatest([
-            this.authenticationService.getUserObs(),
-            this.locationService.getLocation(locationID)
-        ]).pipe(
-            tap(([user, location]) => {
-
-                this.location = location;
-                this.user = user;
-
-                this.isNotFound = !!!location;
-
-                this.showEdit = user.isAdmin() || user.userAuthorities.some((authority: Authority) =>
-                    authority.authorityId === location.authority.authorityId
-                );
-                this.breadcrumbService.setCurrentBreadcrumbs([{
-                    pageName: 'Details',
-                    url: `/dashboard/${location?.locationId}`
-                }]);
-
-                this.updateReservations();
-            })
-        );
-    }
-
-    /**
-     * Set up the subscriptions for the component.
-     */
-    setupSubscriptions(): void {
-        // Update reservations (and calendar) every minute.
+        // Update the reservations and events every minute.
         this.subscription.add(
             interval(1000 * 60).subscribe(() => {
                 this.updateEvents().then(() => this.updateReservations());
@@ -109,13 +80,48 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 this.language = this.translateService.currentLang;
             })
         );
+
+        // Combine the user and location observables.
+        this.contextSub$ = combineLatest([
+            this.authenticationService.getUserObs(),
+            this.locationService.getLocation(locationID)
+        ]).pipe(
+            tap(([user, location]) => {
+                this.user = user;
+                this.location = location;
+                this.isNotFound = location === null || location === undefined;
+
+                this.showEdit = user.isAdmin() || user.hasAuthority(
+                    location.authority
+                );
+
+                this.breadcrumbService.setCurrentBreadcrumbs([{
+                    pageName: 'Details',
+                    url: `/dashboard/${location?.locationId}`
+                }]);
+
+                if (!this.user.isLoggedIn()) {
+                    this.loginRedirectService.registerUrl(this.router.url);
+                }
+
+                this.updateReservations();
+            })
+        );
     }
 
+    
     /**
-     * Update the reservations list with data from the backend.
+     * Updates the reservations for the current location.
+     * 
+     * This method fetches the reservations for the current location from the 
+     * authentication service, filters and sorts them, and updates the internal 
+     * reservations list. Optionally, it can reset the new and removed reservations.
+     * 
+     * @param {boolean} [reset=false] - If true, resets the new and removed reservations.
+     * @returns {void}
      */
-    updateReservations(reset = false): void {
-        if (!this.location) {
+    public updateReservations(reset: boolean = false): void {
+        if (this.location === null || this.location === undefined) {
             return;
         }
 
@@ -138,11 +144,20 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         void this.updateEvents();
     }
 
+    
     /**
-     * Update the events list with data from the backend.
+     * Updates the events for the location reservation component.
+     * 
+     * @param {boolean} [fetchTimeslots=true] - Determines whether to fetch and reload the timeslots from the backend.
+     * @returns {Promise<void>} A promise that resolves when the events have been updated.
+     * 
+     * @remarks
+     * - If the location is null or undefined, the function will return early.
+     * - If `fetchTimeslots` is true, it fetches the timeslots from the backend and updates the `isReservable` property.
+     * - Converts the fetched timeslots into calendar events and updates the `events` property.
      */
     async updateEvents(fetchTimeslots = true): Promise<void> {
-        if (!this.location) {
+        if (this.location === null || this.location === undefined) {
             return;
         }
 

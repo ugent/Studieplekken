@@ -48,6 +48,18 @@ export class User {
     }
 
     /**
+     * Check if the user has a certain authority.
+     *
+     * @param authority Authority
+     * @returns boolean
+     */
+    hasAuthority(authority: Authority): boolean {
+        return this.isAdmin() || this.userAuthorities.some(
+            (auth: Authority) => auth.authorityId === authority.authorityId
+        );
+    }
+
+    /**
      * Check if the user is a scanner
      *
      * @returns boolean
