@@ -36,14 +36,14 @@
                         <div class="col">
                             <label for="titleNl">
                                 {{'management.faq.modifyModal.form.titleNl' | translate}}
-                                <input class="form-control" id="titleNl" type="text" formControlName="nl" required>
                             </label>
+                            <input class="form-control" id="titleNl" type="text" formControlName="nl" required>
                         </div>
                         <div class="col">
                             <label for="titleEn">
                                 {{'management.faq.modifyModal.form.titleEn' | translate}}
-                                <input class="form-control" id="titleEn" type="text" formControlName="en" required>
                             </label>
+                            <input class="form-control" id="titleEn" type="text" formControlName="en" required>
                         </div>
                     </div>
                 </ng-container>
@@ -54,14 +54,14 @@
                         <div class="col-12">
                             <label for="contentNl">
                                 {{'management.faq.modifyModal.form.contentNl' | translate}}
-                                <ckeditor id="contentNl" formControlName="nl" [editor]="editor" required></ckeditor>
                             </label>
+                            <ckeditor id="contentNl" formControlName="nl" [editor]="editor" required></ckeditor>
                         </div>
                         <div class="col-12">
                             <label for="contentEn">
                                 {{'management.faq.modifyModal.form.contentEn' | translate}}
-                                <ckeditor id="contentEn" formControlName="en" [editor]="editor" required></ckeditor>
                             </label>
+                            <ckeditor id="contentEn" formControlName="en" [editor]="editor" required></ckeditor>
                         </div>
                     </div>
                 </ng-container>
@@ -71,22 +71,22 @@
                     <div class="col">
                         <label for="category">
                             {{'management.faq.modifyModal.form.category' | translate}}
-                            <select class="form-control" id="category" formControlName="category">
-                                <!-- Display empty select for safari -->
-                                <option style="display:none" disabled selected value=""></option>
-                                <option *ngFor="let category of categories" [value]="category.id">
-                                    {{category.name.translations[translateService.currentLang] }}
-                                </option>
-                            </select>
                         </label>
+                        <select class="form-control" id="category" formControlName="category">
+                            <!-- Display empty select for safari -->
+                            <option style="display:none" disabled selected value=""></option>
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{category.name.translations[translateService.currentLang] }}
+                            </option>
+                        </select>
                     </div>
                 </div>
 
                 <!-- FAQ is pinned -->
                 <div class="row">
                     <div class="col">
+                        <input type="checkbox" class="form-control" id="isPinned" formControlName="isPinned">
                         <label for="isPinned">
-                            <input type="checkbox" class="form-control" id="isPinned" formControlName="isPinned">
                             {{'management.faq.modifyModal.form.isPinned' | translate}}
                         </label>
                     </div>
