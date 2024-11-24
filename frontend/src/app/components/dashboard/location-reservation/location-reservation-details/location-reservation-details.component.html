@@ -14,17 +14,14 @@
                               {{ language === 'nl' ? tag.dutch : tag.english }}
                           </span>
                         </li>
-                        <li
-                            *ngIf="location.optionalNextUpcomingReservableTimeslot !== null && location.optionalNextUpcomingReservableTimeslot.reservable">
+                        <li *ngIf="location.optionalNextUpcomingReservableTimeslot !== null && location.optionalNextUpcomingReservableTimeslot.reservable">
                             <span class="tag">{{'dashboard.locationDetails.tag.reservable' | translate}}</span>
                         </li>
-                        <li
-                            *ngIf="location.optionalNextUpcomingReservableTimeslot !== null && !location.optionalNextUpcomingReservableTimeslot.reservable">
+                        <li *ngIf="location.optionalNextUpcomingReservableTimeslot !== null && !location.optionalNextUpcomingReservableTimeslot.reservable">
                             <span class="tag">{{'dashboard.locationDetails.tag.notReservable' | translate}}</span>
                         </li>
                         <li *ngIf="location.tomorrowStillAvailable">
-                            <span
-                                class="tag">{{'dashboard.locationDetails.tag.tomorrowStillAvailable' | translate}}</span>
+                            <span class="tag">{{'dashboard.locationDetails.tag.tomorrowStillAvailable' | translate}}</span>
                         </li>
                         <li *ngIf="location.openDuringWeek">
                             <span class="tag">{{'dashboard.locationDetails.tag.week' | translate}}</span>
@@ -58,11 +55,11 @@
                         <i class="icon-calendar" aria-hidden="true"></i>
                         <span>
                             {{
-                            'dashboard.locationDetails.status.statusReservableFrom' | translate:{
-                                week: (location.optionalNextUpcomingReservableTimeslot.timeslotDate.toDate() | date:'dd/MM/yyyy'),
-                                openingDate: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'dd/MM/yyyy'),
-                                openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'HH:mm')
-                            }
+                                'dashboard.locationDetails.status.statusReservableFrom' | translate:{
+                                    week: (location.optionalNextUpcomingReservableTimeslot.timeslotDate.toDate() | date:'dd/MM/yyyy'),
+                                    openingDate: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'dd/MM/yyyy'),
+                                    openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'HH:mm')
+                                }
                             }}
                         </span>
                     </li>
