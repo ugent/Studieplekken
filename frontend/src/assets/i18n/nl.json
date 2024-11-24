@@ -97,7 +97,7 @@
             "yourCalendar": "jouw persoonlijke kalender",
             "status": {
                 "statusOpen": "Sluit om {}",
-                "statusClosed": "Gesloten",
+                "statusClosed": "Geen openstaande timeslots",
                 "statusClosedActive": "Opent opnieuw om {}",
                 "statusClosedUpcoming": "Opent opnieuw op {}",
                 "statusReservableFrom": "Reserveren voor week {{week}} kan vanaf {{openingDate}} om {{openingTime}}"

@@ -96,7 +96,7 @@
             "yourCalendar": "your personal calendar",
             "status": {
                 "statusOpen": "Closes at {}",
-                "statusClosed": "Closed",
+                "statusClosed": "No available timeslots",
                 "statusClosedActive": "Opens again at {}",
                 "statusClosedUpcoming": "Opens again {}",
                 "statusReservableFrom": "Reservations for week {{week}} can be made as of {{openingDate}} at {{openingTime}}"

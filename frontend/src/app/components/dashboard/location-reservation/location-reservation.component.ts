@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {combineLatest, interval, Observable, Subscription} from 'rxjs';
+import {combineLatest, interval, Observable, of, Subscription} from 'rxjs';
 import {LocationService} from '@/services/api/locations/location.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '@/model/User';
@@ -18,7 +18,6 @@ import {
 import {tap} from 'rxjs/operators';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
 import {AfterReservationComponent} from './after-reservation/after-reservation.component';
-import {Authority} from '@/model/Authority';
 import { LoginRedirectService } from '@/services/authentication/login-redirect.service';
 
 @Component({
@@ -129,12 +128,12 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
             // Update the reservations list and sort it.
             this.allReservations = reservations.filter(reservation =>
                 reservation.timeslot.locationId === this.location.locationId
-            ).sort((a, b) =>
-                Number(b.timeslot.getStartMoment()) - Number(a.timeslot.getStartMoment())
+            ).sort((locationA: LocationReservation, locationB: LocationReservation) =>
+                Number(locationB.timeslot.getStartMoment()) - Number(locationA.timeslot.getStartMoment())
             );
 
             // Reset the new and removed reservations if requested.
-            if (reset) {
+            if (reset === true) {
                 this.removedReservations = [];
                 this.newReservations = [];
             }
@@ -156,34 +155,40 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
      * - If `fetchTimeslots` is true, it fetches the timeslots from the backend and updates the `isReservable` property.
      * - Converts the fetched timeslots into calendar events and updates the `events` property.
      */
-    async updateEvents(fetchTimeslots = true): Promise<void> {
+    public updateEvents(fetchTimeslots: boolean = true): Promise<void> {
         if (this.location === null || this.location === undefined) {
             return;
         }
 
         // Fetch and reload the timeslots from the backend.
-        if (fetchTimeslots) {
-            this.timeslots = await this.timeslotsService.getTimeslotsOfLocation(this.location.locationId).pipe(
+        let timeslotsObs = of(this.timeslots);
+
+        if (fetchTimeslots === true) {
+            timeslotsObs = this.timeslotsService.getTimeslotsOfLocation(this.location.locationId).pipe(
                 tap((timeslots: Timeslot[]) =>
                     this.isReservable = timeslots.some(timeslot =>
-                        timeslot.reservableFrom?.isSameOrBefore(
-                            moment()
-                        ) && !timeslot.isInPast()
+                        timeslot.reservableFrom?.isSameOrBefore(moment.now()) && !timeslot.isInPast()
                     )
                 )
-            ).toPromise();
+            );
         }
 
-        // Convert the timeslots into calendar events.
-        this.events = this.timeslots.map(timeslot => this.timeslotCalendarEventService.timeslotToCalendarEvent(
-            timeslot, this.language, [
-                ...this.newReservations, ...this.allReservations.filter(res =>
-                    !this.removedReservations.some(res2 =>
-                        timeslotEquals(res.timeslot, res2.timeslot)
+        timeslotsObs.subscribe((timeslots: Timeslot[]) => {
+            // Update the timeslots.
+            this.timeslots = timeslots;
+
+            // We convert all existing and new reservations to 
+            // calendar events and filter out the removed reservations.
+            this.events = this.timeslots.map(timeslot =>
+                this.timeslotCalendarEventService.timeslotToCalendarEvent(timeslot, this.language, [
+                    ...this.newReservations, ...this.allReservations.filter(res =>
+                        !this.removedReservations.some(res2 =>
+                            timeslotEquals(res.timeslot, res2.timeslot)
+                        )
                     )
-                )
-            ]
-        ));
+                ])
+            );
+        });
     }
 
     /**
@@ -191,7 +196,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
      *
      * @param event The event containing the selected timeslot.
      */
-    timeslotPicked(event: { timeslot: Timeslot }): void {
+    public timeslotPicked(event: { timeslot: Timeslot }): void {
         const currentUser = this.user;
 
         if (!currentUser.isLoggedIn()) {
@@ -253,10 +258,12 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         }
     }
 
+    
     /**
-     * Destroy the component and its subscriptions.
+     * Lifecycle hook that is called when the component is destroyed.
+     * Unsubscribes from the subscription to prevent memory leaks.
      */
-    ngOnDestroy(): void {
+    public ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 }
