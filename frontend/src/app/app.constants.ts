@@ -9,6 +9,8 @@ export const authenticationWasExpiredUrlLSKey = 'authenticationWasExpiredUrl';
  */
 export const msToShowFeedback = 10000;
 
+export const penaltyPointsLimit = 100;
+
 export enum LocationStatus {
   OPEN = 'OPEN',
   CLOSED = 'CLOSED',

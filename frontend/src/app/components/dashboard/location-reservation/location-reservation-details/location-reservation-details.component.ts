@@ -10,7 +10,7 @@ import {LocationService} from '@/services/api/locations/location.service';
     templateUrl: './location-reservation-details.component.html',
     styleUrls: ['./location-reservation-details.component.scss']
 })
-export class LocationReservationDetailsComponent implements OnInit {
+export class LocationReservationDetailsComponent {
 
     @Input() location: Location;
     @Input() user: User;
@@ -25,10 +25,18 @@ export class LocationReservationDetailsComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
-    }
-
-    toggleSubscription(): void {
+    /**
+     * Toggles the subscription status of the current location.
+     * 
+     * This method switches the `subscribed` property of the `location` object.
+     * If the location is currently subscribed, it will unsubscribe by calling 
+     * `unsubscribeFromLocation` method of `locationService` with the location's ID.
+     * If the location is not subscribed, it will subscribe by calling 
+     * `subscribeToLocation` method of `locationService` with the location's ID.
+     * 
+     * The appropriate subscription or unsubscription request is then executed.
+     */
+    public toggleSubscription(): void {
         let request: Observable<void>;
 
         this.location.subscribed = !this.location.subscribed;

@@ -14,7 +14,7 @@
             {{ 'reservations.shouldLoginMaker' | translate }}
         </ng-container>
         <ng-container *ngIf="user.isLoggedIn()">
-            <button (click)="commitModal.open()" [disabled]="!modifiedReservations()" class="button button-primary" *ngIf="canMakeReservation()">
+            <button (click)="commitModal.open()" [disabled]="!hasModifiedReservations()" class="button button-primary" *ngIf="canMakeReservation()">
                 {{'reservations.reservationButton' | translate}}
             </button>
             <span *ngIf="!canMakeReservation()">

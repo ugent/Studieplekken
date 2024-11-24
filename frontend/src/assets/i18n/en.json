@@ -119,6 +119,10 @@
                     "afterReservationLoadingMessage": "Your reservations are being placed, please wait...",
                     "afterReservationFailedMessage": "Something went wrong while trying to make your reservation."
                 },
+                "timeslot": {
+                    "reservableFrom": "{{ openingHour }} - {{ closingHour }} <br> Reservable from {{ reservableFrom }}",
+                    "freeAdmission": "Requires no reservation <br> {{ openingHour }} - {{ closingHour }}"
+                },
                 "rejectedExplanation": "Your reservation was rejected, because the location was already full when it came through. This is purely informative, and can be ignored. If any places become available, be sure to try again!"
             },
             "tag": {

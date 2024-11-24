@@ -87,6 +87,12 @@
                     <div [innerHTML]="location.descriptionDutch" *ngIf="language === 'nl'">
                         {{ location.descriptionDutch }}
                     </div>
+                    <template #noDescription>
+                        <div class="messages messages--info">
+                            <i class="icon-info" aria-hidden="true"></i>
+                            {{'dashboard.locationDetails.noDescription' | translate}}
+                        </div>
+                    </template>
                 </div>
                 <!-- Info messages -->
                 <div class="mt-4 messages messages--info" *ngIf="user.isLoggedIn()">
