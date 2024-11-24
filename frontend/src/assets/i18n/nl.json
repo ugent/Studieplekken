@@ -120,7 +120,11 @@
                     "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
                     "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
                 },
-                "rejectedMessage": "Je reservatie is geweigerd omdat de locatie al vol zat. Dit is puur informatief: je kan dit gewoon negeren. Probeer zeker opnieuw als er een plekje vrijkomt!"
+                "timeslot": {
+                    "reservableFrom": "{{ openingHour }} - {{ closingHour }} <br> Reserveren vanaf {{ reservableFrom }}",
+                    "freeAdmission": "Geen reservatie nodig <br> {{ openingHour }} - {{ closingHour }}"
+                },
+                "rejectedMessage": "Je reservatie is geweigerd omdat de locatie al vol zat. Probeer zeker opnieuw als er een plekje vrijkomt!"
             },
             "tag": {
                 "reservable": "Reserveerbaar",

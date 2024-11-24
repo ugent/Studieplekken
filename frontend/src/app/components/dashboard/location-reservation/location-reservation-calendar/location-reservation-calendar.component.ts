@@ -4,7 +4,7 @@ import {CalendarEvent} from 'angular-calendar';
 import {Location} from '@/model/Location';
 import {Timeslot} from '@/model/Timeslot';
 import {combineLatest, Observable} from 'rxjs';
-import {first, tap} from 'rxjs/operators';
+import {tap} from 'rxjs/operators';
 import {map} from 'rxjs/internal/operators/map';
 import {Moment} from 'moment/moment';
 import {ModalComponent} from '../../../stad-gent-components/molecules/modal/modal.component';
@@ -12,6 +12,7 @@ import {LocationReservation} from '@/model/LocationReservation';
 import {
     LocationReservationsService
 } from '@/services/api/location-reservations/location-reservations.service';
+import { penaltyPointsLimit } from '@/app.constants';
 
 @Component({
     selector: 'app-location-reservation-calendar',
@@ -40,15 +41,35 @@ export class LocationReservationCalendarComponent {
     ) {
     }
 
-    modifiedReservations(): boolean {
+    /**
+     * Checks if there are any modified reservations.
+     *
+     * This method returns `true` if there are any new or removed reservations,
+     * indicating that the reservations have been modified.
+     *
+     * @returns {boolean} `true` if there are new or removed reservations, otherwise `false`.
+     */
+    public hasModifiedReservations(): boolean {
         return this.newReservations.length > 0 || this.removedReservations.length > 0;
     }
 
-    canMakeReservation(): boolean {
-        return this.user.isLoggedIn() && this.user.penaltyPoints < 100;
+    /**
+     * Determines if the user can make a reservation.
+     * 
+     * @returns {boolean} `true` if the user is logged in and has fewer than 100 penalty points, otherwise `false`.
+     */
+    public canMakeReservation(): boolean {
+        return this.user.isLoggedIn() && this.user.penaltyPoints < penaltyPointsLimit;
     }
 
-    commitReservations(): void {
+    /**
+     * Commits the new and removed reservations by sending them to the server.
+     * Closes the commit modal and opens the after modal.
+     * Emits an event after the reservations have been successfully committed.
+     * 
+     * @returns {void}
+     */
+    public commitReservations(): void {
         this.commitModal.close();
         this.afterModal.open();
 
@@ -60,11 +81,8 @@ export class LocationReservationCalendarComponent {
                 this.removedReservations
             )
         ]).pipe(
-            first(), tap(() => {
-                this.committedReservations.emit();
-            }), map(([res]) =>
-                res
-            )
+            tap(() => this.committedReservations.emit()),
+            map(([reservationTimes]) => reservationTimes)
         );
     }
 }
