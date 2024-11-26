@@ -21,10 +21,10 @@ $theming-material-components-theme: mat.define-light-theme((
 $heading-font-family: "'PannoTextMedium',Arial, sans-serif";
 
 $typography: mat.define-typography-config(
-    $display-4: mat.define-typography-level(112px, $font-family: $heading-font-family),
-    $display-3: mat.define-typography-level(56px, $font-family: $heading-font-family),
-    $display-2: mat.define-typography-level(45px, $font-family: $heading-font-family),
-    $display-1: mat.define-typography-level(34px, $font-family: $heading-font-family),
-    $headline: mat.define-typography-level(24px, $font-family: $heading-font-family),
-    $title: mat.define-typography-level(20px, $font-family: $heading-font-family),
+    $headline-1: mat.define-typography-level(112px, $font-family: $heading-font-family),
+    $headline-2: mat.define-typography-level(56px, $font-family: $heading-font-family),
+    $headline-3: mat.define-typography-level(45px, $font-family: $heading-font-family),
+    $headline-4: mat.define-typography-level(34px, $font-family: $heading-font-family),
+    $headline-5: mat.define-typography-level(24px, $font-family: $heading-font-family),
+    $headline-6: mat.define-typography-level(20px, $font-family: $heading-font-family),
 );

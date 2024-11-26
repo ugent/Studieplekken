@@ -11,17 +11,8 @@ import {api} from '../endpoints';
 })
 export class FaqService {
 
-    /* Category cache */
-    private categoryCache: Cache<string, FaqCategory> = new Cache(this.client,
-        (category: FaqCategory) => category.id,
-        (json: FaqCategory) => FaqCategory.fromJson(json)
-    );
-
-    /* Item cache */
-    private itemCache: Cache<string, FaqItem> = new Cache(this.client,
-        (item: FaqItem) => item.id,
-        (json: FaqItem) => FaqItem.fromJson(json)
-    );
+    private categoryCache: Cache<string, FaqCategory>;
+    private itemCache: Cache<string, FaqItem>;
 
     /**
      * Constructor.
@@ -31,6 +22,14 @@ export class FaqService {
     constructor(
         private client: HttpClient
     ) {
+        this.categoryCache = new Cache(this.client,
+            (category: FaqCategory) => category.id,
+            (json: FaqCategory) => FaqCategory.fromJson(json)
+        );
+        this.itemCache = new Cache(this.client,
+            (item: FaqItem) => item.id,
+            (json: FaqItem) => FaqItem.fromJson(json)
+        );
     }
 
     /**

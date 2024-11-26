@@ -1,5 +1,5 @@
 import {Directive, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BehaviorSubject, EMPTY, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import {TableComponent} from '@/contracts/table.component.interface';
 import {DeleteAction, EditAction, TableAction, TableMapper} from '@/model/Table';

@@ -1,7 +1,11 @@
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {catchError, filter, map, tap} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class Cache<I, V> {
     constructor(
         private http: HttpClient,

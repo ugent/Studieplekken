@@ -6,7 +6,9 @@ import {map, mergeMap} from 'rxjs/operators';
 import {Timeslot} from '@/model/Timeslot';
 import * as moment from 'moment';
 
-@Pipe({name: 'formatStatus'})
+@Pipe({
+    name: 'formatStatus'
+})
 export class FormatStatusPipe implements PipeTransform {
     constructor(
         private translate: TranslateService,

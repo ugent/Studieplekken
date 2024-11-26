@@ -6,7 +6,8 @@ import {Authority, AuthorityConstructor} from '@/model/Authority';
 import {BaseManagementComponent} from '../base-management.component';
 import {AuthenticationService} from '@/services/authentication/authentication.service';
 import {startWith, switchMap} from 'rxjs/operators';
-import {TableMapper} from '@/model/Table';
+import {TableAction, TableMapper} from '@/model/Table';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-authorities-management',
@@ -19,7 +20,8 @@ export class AuthoritiesManagementComponent extends BaseManagementComponent<Auth
 
     constructor(
         private authoritiesService: AuthoritiesService,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private router: Router
     ) {
         super();
     }
@@ -75,5 +77,14 @@ export class AuthoritiesManagementComponent extends BaseManagementComponent<Auth
             'management.authorities.table.authorityName': authority.authorityName,
             'management.authorities.table.description': authority.description
         });
+    }
+
+    getTableActions(): TableAction<Authority>[] {
+        return [
+            new TableAction('icon-user', (item: Authority) => {
+                void this.router.navigate(['management/authorities/' + item.authorityId]);
+            }),
+            ...super.getTableActions()
+        ]
     }
 }

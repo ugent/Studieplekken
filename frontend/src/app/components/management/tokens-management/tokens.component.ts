@@ -21,7 +21,6 @@ export class TokensComponent extends BaseManagementComponent<Token> {
     protected tokensObs$: Observable<Token[]>;
 
     protected addedToken: Token;
-    protected formGroup: FormGroup;
 
     constructor(
         private tokensService: TokensService
