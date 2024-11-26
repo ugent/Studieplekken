@@ -38,7 +38,7 @@ export class AuthorizationGuardService implements CanActivate {
      *
      * @param route
      */
-    canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
+    public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
         return this.authenticationService.user.pipe(
             // Wait until the user has been fetched from the backend (can be empty).
             filter(() => this.authenticationService.hasAttemptedLogin),

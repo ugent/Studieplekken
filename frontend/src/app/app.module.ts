@@ -529,7 +529,7 @@ const routes: Routes = [
     ],
     imports: [
         BrowserModule,
-        RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'}),
+        RouterModule.forRoot(routes, {}),
         HttpClientModule,
         TranslateModule.forRoot({
             defaultLanguage: 'nl',
