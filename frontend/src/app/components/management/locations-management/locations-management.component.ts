@@ -44,7 +44,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         super();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         super.ngOnInit();
 
         this.userObs$ = this.authenticationService.getUserObs();
@@ -84,7 +84,10 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         );
     }
 
-    setupForm(): void {
+    /**
+     * @inheritdoc
+     */
+    public setupForm(): void {
         this.formGroup = new FormGroup({
             locationId: new FormControl(0),
             name: new FormControl('', Validators.required),
@@ -97,7 +100,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         });
     }
 
-    storeAdd(authorities: Authority[], buildings: Building[], location: any): void {
+    public storeAdd(authorities: Authority[], buildings: Building[], location: any): void {
         const authority = authorities.find(a =>
             a.authorityId === Number(location.authority)
         );
@@ -113,18 +116,18 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         );
     }
 
-    storeDelete(location: Location): void {
+    public storeDelete(location: Location): void {
         this.sendBackendRequest(
             this.locationService.deleteLocation(location.locationId)
         );
     }
 
-    showVolunteers(location: Location): void {
+    public showVolunteers(location: Location): void {
         this.selectedSub$.next(location);
         this.volunteersModal.open();
     }
 
-    getTableMapper(): TableMapper<Location> {
+    public getTableMapper(): TableMapper<Location> {
         return (location: Location) => ({
             'management.locations.table.header.name': location.name,
             'management.locations.table.header.authority': location.authority.authorityName,
@@ -132,7 +135,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         });
     }
 
-    getTableActions(): TableAction<Location>[] {
+    public getTableActions(): TableAction<Location>[] {
         return [
             new TableAction('icon-user', (location: Location) => {
                 this.showVolunteers(location);

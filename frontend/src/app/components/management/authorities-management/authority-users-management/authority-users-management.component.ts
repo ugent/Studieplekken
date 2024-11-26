@@ -5,8 +5,7 @@ import {
     UntypedFormGroup,
     Validators
 } from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {MatDialogRef} from '@angular/material/dialog/dialog-ref';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AuthoritiesService} from '@/services/api/authorities/authorities.service';

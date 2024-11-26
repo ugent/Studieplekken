@@ -11,13 +11,16 @@ import {TranslateService} from '@ngx-translate/core';
     providedIn: 'root',
 })
 export class TagsService {
-    constructor(private http: HttpClient, private translateService: TranslateService) {
-    }
+    private tagCache: Cache<number, LocationTag>;
 
-    tagCache = new Cache<number, LocationTag>(
-        this.http,
-        (arg: LocationTag) => arg.tagId
-    );
+    constructor(
+        private http: HttpClient,
+        private translateService: TranslateService
+    ) {
+        this.tagCache = new Cache<number, LocationTag>(this.http,
+            (arg: LocationTag) => arg.tagId
+        );
+    }
 
     /*****************************************************
      *   API calls for CRUD operations with public.TAGS  *

@@ -15,115 +15,138 @@ type locationOverview = { [locationName: string]: string[] };
     providedIn: 'root',
 })
 export class LocationService {
+    private locationCache: Cache<number, Location>;
+
     constructor(private http: HttpClient) {
+       this.locationCache = new Cache(this.http,
+            (location: Location) => location.locationId,
+            (json: never) => LocationConstructor.newFromObj(json)
+        );
     }
 
-    locationCache: Cache<number, Location> = new Cache(
-        this.http,
-        (arg: Location) => arg.locationId,
-        (json: never) => LocationConstructor.newFromObj(json)
-    );
-
-    /***********************************************************
-     *   API calls for CRUD operations with public.LOCATIONS   *
-     ***********************************************************/
-
-    getLocations(): Observable<Location[]> {
+    /**
+     * Retrieves a list of visible locations.
+     *
+     * @returns {Observable<Location[]>} An observable that emits an array of Location objects.
+     */
+    public getLocations(): Observable<Location[]> {
         return this.locationCache.getAllValues(api.visible_locations);
     }
 
-    getAllLocations(cached: boolean = true): Observable<Location[]> {
+    /**
+     * Retrieves all locations.
+     *
+     * @param cached - A boolean indicating whether to use cached data. Defaults to true.
+     * @returns An Observable that emits an array of Location objects.
+     */
+    public getAllLocations(cached: boolean = true): Observable<Location[]> {
         return this.locationCache.getAllValues(
             api.all_locations, !cached
         );
     }
 
-    getLocation(
-        locationId: number,
-        invalidateCache: boolean = false
-    ): Observable<Location> {
+    /**
+     * Retrieves the location details for a given location ID.
+     * 
+     * @param locationId - The unique identifier of the location.
+     * @param invalidateCache - Optional parameter to force cache invalidation and fetch fresh data. Defaults to false.
+     * @returns An Observable that emits the location details.
+     */
+    public getLocation(locationId: number, invalidateCache: boolean = false): Observable<Location> {
         const url = api.location.replace('{locationId}', String(locationId));
         return this.locationCache.getValue(locationId, url, invalidateCache);
     }
 
-    getAllLocationNextReservableFroms(): Observable<{
-        locationName: string,
-        nextReservableFrom: Moment
-    }[]> {
-        return this.http.get<{
-            locationName: string,
-            nextReservableFrom: Moment
-        }[]>(api.allReservableFroms);
+    /**
+     * Fetches the next reservable times for all locations.
+     *
+     * @returns An Observable that emits an array of objects, each containing:
+     * - `locationName`: The name of the location.
+     * - `nextReservableFrom`: The next available reservation time as a Moment object.
+     */
+    public getAllLocationNextReservableFroms(): Observable<{locationName: string, nextReservableFrom: Moment}[]> {
+        return this.http.get<{locationName: string, nextReservableFrom: Moment}[]>(
+            api.allReservableFroms
+        );
     }
 
-    getVolunteers(locationId: number): Observable<User[]> {
-        const url = api.locationVolunteers.replace(
-            '{locationId}',
-            String(locationId)
-        );
+    /**
+     * Retrieves a list of volunteers for a given location.
+     *
+     * @param {number} locationId - The ID of the location to get volunteers for.
+     * @returns {Observable<User[]>} An observable that emits an array of User objects representing the volunteers.
+     */
+    public getVolunteers(locationId: number): Observable<User[]> {
+        const url = api.locationVolunteers.replace('{locationId}',String(locationId));
         return this.http.get<User[]>(url);
     }
 
-    addVolunteer(locationId: number, userId: string): Observable<void> {
+    /**
+     * Adds a volunteer to a specified location.
+     *
+     * @param locationId - The ID of the location to which the volunteer will be added.
+     * @param userId - The ID of the user who will be added as a volunteer.
+     * @returns An Observable that completes when the volunteer has been successfully added.
+     */
+    public addVolunteer(locationId: number, userId: string): Observable<void> {
         const url = api.addLocationVolunteer
             .replace('{locationId}', String(locationId))
             .replace('{userId}', String(userId));
         return this.http.post<void>(url, {});
     }
 
-    deleteVolunteer(locationId: number, userId: string): Observable<void> {
+    /**
+     * Deletes a volunteer from a specific location.
+     *
+     * @param locationId - The ID of the location from which the volunteer will be removed.
+     * @param userId - The ID of the user (volunteer) to be removed.
+     * @returns An Observable that completes when the volunteer is successfully deleted.
+     */
+    public deleteVolunteer(locationId: number, userId: string): Observable<void> {
         const url = api.addLocationVolunteer
             .replace('{locationId}', String(locationId))
             .replace('{userId}', String(userId));
         return this.http.delete<void>(url, {});
     }
 
-    addLocation(location: Location): Observable<void> {
+    /**
+     * Adds a new location by sending a POST request to the API.
+     *
+     * @param location - The location object to be added.
+     * @returns An Observable that completes when the location is successfully added.
+     */
+    public addLocation(location: Location): Observable<void> {
         return this.http.post<void>(api.addLocation, location);
     }
 
-    updateLocation(locationId: number, location: Location): Observable<void> {
+    public updateLocation(locationId: number, location: Location): Observable<void> {
         return this.http.put<void>(
             api.updateLocation.replace('{locationId}', String(locationId)),
             location
         );
     }
 
-    approveLocation(location: Location, approval: boolean): Observable<void> {
+    public approveLocation(location: Location, approval: boolean): Observable<void> {
         return this.http.put<void>(
             api.approveLocation.replace('{locationId}', String(location.locationId)),
             {location, approval}
         );
     }
 
-    deleteLocation(locationId: number): Observable<void> {
+    public deleteLocation(locationId: number): Observable<void> {
         return this.http.delete<void>(
             api.deleteLocation.replace('{locationId}', String(locationId))
         );
     }
 
-    /***************************************************************
-     *   API calls for CRUD operations with public.LOCATION_TAGS   *
-     ***************************************************************/
-
-    setupTagsForLocation(
-        locationId: number,
-        tags: LocationTag[]
-    ): Observable<void> {
+    public setupTagsForLocation(locationId: number, tags: LocationTag[]): Observable<void> {
         return this.http.put<void>(
             api.setupTagsForLocation.replace('{locationId}', String(locationId)),
             tags.map((v) => v.tagId)
         );
     }
 
-    /**************************************************
-     *   Miscellaneous queries concerning locations   *
-     ***************************************************/
-
-    getOpeningOverviewOfWeek(
-        year: number,
-        weekNr: number
-    ): Observable<locationOverview> {
+    public getOpeningOverviewOfWeek(year: number, weekNr: number): Observable<locationOverview> {
         return this.http.get<locationOverview>(
             api.openingHoursOverview
                 .replace('{year}', String(year))
@@ -131,14 +154,14 @@ export class LocationService {
         );
     }
 
-    subscribeToLocation(locationId: number): Observable<void> {
+    public subscribeToLocation(locationId: number): Observable<void> {
         return this.http.post<void>(
             api.userLocationSubscriptions.replace('{locationId}', String(locationId)),
             {}
         );
     }
 
-    unsubscribeFromLocation(locationId: number): Observable<void> {
+    public unsubscribeFromLocation(locationId: number): Observable<void> {
         return this.http.delete<void>(
             api.userLocationSubscriptions.replace('{locationId}', String(locationId))
         );

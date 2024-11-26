@@ -5,20 +5,13 @@
 
 <div *ngIf="locations !== undefined && successOnRetrievingLocations === true">
     <div *ngIf="locations.length > 0; else noLocations">
-        <div class="dashboard-item-container" fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start"
-            *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
-            <app-dashboard-item fxFlex="0 1 calc(33% - 32px);" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%"
-                *ngFor="let location of filteredLocations" [location]="location"
+        <div class="dashboard-item-container d-flex flex-wrap gap-3" *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
+            <app-dashboard-item style="width: calc(33% - 32px)" *ngFor="let location of filteredLocations" [location]="location"
                 [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
             </app-dashboard-item>
         </div>
     </div>
 </div>
-
-<app-contact
-    title="Hellaur"
-    content="Lorem ipsum dolor sit amet, yappa yappa yappa yappa yappa.">
-</app-contact>
 
 <!-- Feedback to the user when the locations are loading/can't be retrieved -->
 <div class="container-fluid">

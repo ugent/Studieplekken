@@ -9,13 +9,13 @@ import {api} from '../endpoints';
     providedIn: 'root',
 })
 export class BuildingService {
-    constructor(private http: HttpClient) {
-    }
+    private buildingCache: Cache<number, Building>;
 
-    buildingCache: Cache<number, Building> = new Cache<number, Building>(
-        this.http,
-        (arg: Building) => arg.buildingId
-    );
+    constructor(private http: HttpClient) {
+        this.buildingCache = new Cache<number, Building>(this.http,
+            (arg: Building) => arg.buildingId
+        );
+    }
 
     // *************************************
     // *   CRUD operations for AUTHORITY   *
