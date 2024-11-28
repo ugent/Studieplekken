@@ -13,60 +13,103 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class ScannerComponent {
 
-    availableDevices: MediaDeviceInfo[] = [];
-    deviceCurrent: MediaDeviceInfo = null;
-    deviceSelected: string;
+    @Output() scanSuccess = new EventEmitter<string>();
 
-    formatsEnabled: BarcodeFormat[] = [
+    protected availableDevices: MediaDeviceInfo[] = [];
+    protected deviceCurrent: MediaDeviceInfo = null;
+    protected deviceSelected: string;
+
+    protected formatsEnabled: BarcodeFormat[] = [
         BarcodeFormat.CODE_128,
         BarcodeFormat.DATA_MATRIX,
         BarcodeFormat.EAN_13,
         BarcodeFormat.QR_CODE,
     ];
 
-    hasDevices: boolean;
-    hasPermission: boolean;
+    protected hasDevices: boolean = false;
+    protected hasPermission: boolean = false;
+    protected isEnabled: boolean = false;
+    protected isTorchEnabled: boolean = false;
+    protected isTryHarder: boolean = false;
 
-    @Output() scanSuccess = new EventEmitter<string>();
-
-    torchEnabled = false;
-    torchAvailable$ = new BehaviorSubject<boolean>(false);
-    tryHarder = false;
-
-    constructor() {
-    }
-
-    onCamerasFound(devices: MediaDeviceInfo[]): void {
+    /**
+     * Handles the event when cameras are found.
+     * 
+     * @param devices - An array of MediaDeviceInfo objects representing the available camera devices.
+     */
+    public onCamerasFound(devices: MediaDeviceInfo[]): void {
         this.availableDevices = devices;
-        this.hasDevices = Boolean(
-            devices && devices.length
-        );
+        this.hasDevices = devices && devices.length > 0;
     }
 
-    onCodeResult(resultString: string): void {
+    /**
+     * Handles the result of a successful scan and emits the result string.
+     *
+     * @param resultString - The string result obtained from the scan.
+     * @emits scanSuccess - Emits the result string when a scan is successful.
+     */
+    public onCodeResult(resultString: string): void {
         this.scanSuccess.emit(resultString);
     }
 
-    onDeviceChange(device: MediaDeviceInfo): void {
+    /**
+     * Handles the change of the selected media device.
+     * 
+     * @param device - The media device information object.
+     *                 If the device's ID is different from the currently selected device,
+     *                 it updates the selected device and the current device.
+     */
+    public onDeviceChange(device: MediaDeviceInfo): void {
         if (device?.deviceId !== this.deviceSelected) {
             this.deviceSelected = device?.deviceId;
             this.deviceCurrent = device || undefined;
         }
     }
 
-    onHasPermission(has: boolean): void {
+    /**
+     * Sets the permission status.
+     * 
+     * @param has - A boolean indicating whether the permission is granted.
+     */
+    public onHasPermission(has: boolean): void {
         this.hasPermission = has;
     }
 
-    onTorchCompatible(isCompatible: boolean): void {
-        this.torchAvailable$.next(isCompatible || false);
+    /**
+     * Handles the compatibility of the torch feature.
+     * 
+     * @param isCompatible - A boolean indicating whether the torch feature is compatible.
+     */
+    public onTorchCompatible(isCompatible: boolean): void {
+        this.isTorchEnabled = isCompatible;
     }
 
-    toggleTorch(): void {
-        this.torchEnabled = !this.torchEnabled;
+    /**
+     * Toggles the state of the torch (flashlight) on or off.
+     */
+    public toggleTorch(): void {
+        this.isTorchEnabled = !this.isTorchEnabled;
     }
 
-    toggleTryHarder(): void {
-        this.tryHarder = !this.tryHarder;
+    /**
+     * Toggles the `tryHarder` property between `true` and `false`.
+     */
+    public toggleTryHarder(): void {
+        this.isTryHarder = !this.isTryHarder;
+    }
+
+    /**
+     * Enables the scanner by setting the `isEnabled` property to `true`.
+     */
+    public enableScanner(): void {
+        this.isEnabled = true;
+    }
+
+    /**
+     * Disables the scanner by setting the `isEnabled` property to `false`.
+     * This method can be used to stop the scanner from functioning.
+     */
+    public disableScanner(): void {
+        this.isEnabled = false;
     }
 }

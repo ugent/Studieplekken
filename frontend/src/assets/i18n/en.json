@@ -1190,7 +1190,13 @@
         "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
         "maybe": "This user wasn't found. Search in the list below, or try again.",
         "warn-unattended": "Marking someone as unattended opens up the seat for reservation.",
-        "already-present": "{{user}} was already marked as present!"
+        "already-present": "{{user}} was already marked as present!",
+        "noPermission": "Give the necessary permissions to use the scanner. The scanner is only active when this pop-up is shown.",
+        "noReservation": "This user does not have a reservation for this location at the moment.",
+        "confirmText": "Confirm {{name}} with ID {{id}}?",
+        "successText": "The scan succeeded!",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel"
     },
     "Odisee": "Odisee Hogeschool",
     "Arteveldehogeschool": "Arteveldehogeschool",

@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {LocationService} from '@/services/api/locations/location.service';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '@/model/Location';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError, switchMap, tap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import {
     LocationReservationsService
@@ -11,6 +11,7 @@ import {
 import {BarcodeService} from 'src/app/services/barcode.service';
 import {LocationReservation, LocationReservationState} from 'src/app/model/LocationReservation';
 import {timer} from 'rxjs';
+import { ScannerComponent } from '@/components/shared/scanner/scanner.component';
 
 @Component({
     selector: 'app-scanning-location-details',
@@ -18,17 +19,20 @@ import {timer} from 'rxjs';
     styleUrls: ['./scanning-location-details.component.scss'],
 })
 export class ScanningLocationDetailsComponent implements OnInit {
-    locationObs: Observable<Location>;
-    locationReservationObs: Observable<LocationReservation[]>;
-    locationLoadingSubject: Subject<boolean> = new Subject();
+    @ViewChild(ScannerComponent)
+    public scannerComponent: ScannerComponent;
+    @ViewChild('scannerModal') 
+    public scannerModal: TemplateRef<any>;
 
-    loadingError = new Subject<boolean>();
-    reservation?: LocationReservation;
-    error: string;
+    protected locationObs$: Observable<Location>;
+    protected locationReservationObs$: Observable<LocationReservation[]>;
 
-    lastScanned?: LocationReservation;
+    protected selectedReservation: LocationReservation;
+    protected scannedReservation: LocationReservation;
 
-    @ViewChild('scanner') scannerModal: TemplateRef<any>;
+    protected isLoading: boolean;
+    protected hasLoadingError: boolean = false;
+    protected scanningError: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -39,53 +43,94 @@ export class ScanningLocationDetailsComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
 
-        // Check if locationId is a Number before proceeding. If NaN, redirect to scan locations.
+        // Check if locationId is a Number before proceeding. 
+        // If NaN, redirect to scan locations.
         if (isNaN(locationId)) {
             void this.router.navigate(['/scan/locations']);
-        } else {
-            // thanks to the caching that was implemented, the locationService will just return the cached location
-            this.locationObs = this.locationService.getLocation(locationId).pipe(
-                catchError((err) => {
-                    console.error('Error while fetching the location: ', err);
-                    this.locationLoadingSubject.next(true);
-                    return of<Location>(null);
-                })
-            );
+            return;
+        }
+    
+        this.locationObs$ = this.locationService.getLocation(locationId).pipe(
+            catchError((err) => {
+                console.error('Error while fetching the location: ', err);
+                this.isLoading = false;
+                return of<Location>(null);
+            })
+        );
 
-            this.locationReservationObs = timer(0, 60 * 1000).pipe(
-                switchMap(() => this.locationObs),
-                switchMap((l) =>
-                    this.reservationService.getLocationReservationsOfTimeslot(
-                        l.currentTimeslot.timeslotSequenceNumber
+        this.locationReservationObs$ = timer(0, 60 * 1000).pipe(
+            switchMap(() =>
+                this.locationObs$.pipe(
+                    switchMap((location: Location) => 
+                        this.reservationService.getLocationReservationsOfTimeslot(
+                            location.currentTimeslot.timeslotSequenceNumber
+                        )
                     )
-                ),
-                catchError((err) => {
-                    console.error('Error while loading the users you could scan.', err);
-                    this.loadingError.next(true);
-                    return of<LocationReservation[]>(null);
-                })
-            );
-        }
+                )
+            ),
+            catchError((err) => {
+                console.error('Error while loading the users you could scan.', err);
+                this.hasLoadingError = true;
+                return of<LocationReservation[]>(null);
+            })
+        );
     }
 
-    scanUser(reservations: LocationReservation[], code: string): void {
-        this.error = '';
-        const res = this.barcodeService.getReservation(reservations, code);
+    /**
+     * Scans a user's reservation based on the provided barcode.
+     * 
+     * @param reservations - An array of `LocationReservation` objects to search through.
+     * @param code - The barcode string to match against the reservations.
+     * 
+     * @returns void
+     */
+    public scanUser(reservations: LocationReservation[], code: string): void {
+        this.resetScanningError();
 
-        if (res == null) {
-            this.error = 'scan.maybe';
+        const reservation = this.barcodeService.getReservation(
+            reservations,
+            code
+        );
+
+        if (reservation === null) {
+            this.setScanningError('scan.maybe');
         } else {
-            this.reservation = res;
+            this.selectedReservation = reservation;
         }
     }
 
-    confirm(): void {
-        this.reservationService.postLocationReservationAttendance(this.reservation, true);
-        this.reservation.state = LocationReservationState.PRESENT;
-        this.lastScanned = this.reservation;
-        this.reservation = null;
+    /**
+     * Confirms the reservation by posting the location reservation attendance,
+     * updating the reservation state to PRESENT, and setting the last scanned reservation.
+     * After confirmation, the current reservation is set to null.
+     *
+     * @returns {void}
+     */
+    public confirmReservation(): void {
+        this.reservationService.postLocationReservationAttendance(this.selectedReservation, true).subscribe();
+        this.selectedReservation.state = LocationReservationState.PRESENT;
+        this.scannedReservation = this.selectedReservation;
+        this.selectedReservation = null;
+    }
+
+    /**
+     * Resets the last scanned reservation.
+     *
+     * @returns {void}
+     */
+    protected resetScanningError(): void {
+        this.scanningError = '';
+    }
+
+    /**
+     * Sets the scanning error message.
+     *
+     * @param error - The error message to be set.
+     */
+    protected setScanningError(error: string): void {
+        this.scanningError = error;
     }
 }

@@ -1,0 +1,10 @@
+<div class="messages" [ngClass]="'messages--' + type" role="alert" aria-atomic="true">
+    <i *ngIf="type === 'info'" class="icon-info" aria-hidden="true"></i>
+    <i *ngIf="type === 'warning'" class="icon-exclamation" aria-hidden="true"></i>
+    <i *ngIf="type === 'error'" class="icon-cross" aria-hidden="true"></i>
+    <i *ngIf="type === 'status'" class="icon-checkmark" aria-hidden="true"></i>
+
+    <p>
+        <ng-content></ng-content>
+    </p>
+</div>

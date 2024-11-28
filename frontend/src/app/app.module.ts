@@ -118,6 +118,7 @@ import { UnauthorizedErrorPageComponent } from '@/components/error-pages/unautho
 import { CallToActionComponent } from '@/components/stad-gent-components/call-to-action/call-to-action.component';
 import { CheckboxComponent } from '@/components/stad-gent-components/molecules/forms/checkbox/checkbox.component';
 import { AuthorizationGuardService } from '@/services/guard/authorization/authorization-guard.service';
+import { MessageComponent } from './components/stad-gent-components/molecules/message/message.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -455,6 +456,7 @@ const routes: Routes = [
         UnauthorizedErrorPageComponent,
         CallToActionComponent,
         CheckboxComponent,
+        MessageComponent,
     ],
     imports: [
         BrowserModule,

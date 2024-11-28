@@ -1,8 +1,13 @@
+<app-message type="warning" *ngIf="isEnabled && !hasPermission">
+    {{ 'scan.noPermission' | translate }}
+</app-message>
 <zxing-scanner id="scanner"
-    [torch]="torchEnabled"
+    *ngIf="isEnabled"
+    [torch]="isTorchEnabled"
     [device]="deviceCurrent"
     [formats]="formatsEnabled"
-    [tryHarder]="tryHarder"
+    [tryHarder]="isTryHarder"
+    [enable]="isEnabled"
     (permissionResponse)="onHasPermission($event)"
     (deviceChange)="onDeviceChange($event)"
     (scanSuccess)="onCodeResult($event)"
