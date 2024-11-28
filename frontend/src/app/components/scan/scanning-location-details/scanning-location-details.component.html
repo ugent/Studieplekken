@@ -1,68 +1,67 @@
-<div *ngIf="locationObs | async as location; else loadingOrErrorForLocation">
+<div *ngIf="locationObs$ | async as location; else loadingOrErrorForLocation">
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="m-0">
             {{ ('scan.locationDetails.title' | translate).replace('{locationName}', location.name) }}
         </h3>
-        <div *ngIf="locationReservationObs | async as reservations;">
-            <button class="button button-primary" (click)="scanner.open()"  *ngIf="reservations.length > 0">
+        <div *ngIf="locationReservationObs$ | async as reservations;">
+            <button class="button button-primary" (click)="scannerModal.open()"  *ngIf="reservations.length > 0">
                 {{'scan.phone' | translate}}
             </button>
         </div>
     </div>
-
-    <div *ngIf="locationReservationObs | async as reservations; else loadingOrError">
+    <div *ngIf="locationReservationObs$ | async as reservations; else loadingOrError">
         <div *ngIf="reservations.length > 0; else noUsers">
-
-            <div class="messages messages--info">
-                <i class="icon-info" aria-hidden="true"></i>
+            <app-message>
                 {{"scan.warn-unattended" | translate}}
-                <br/>
                 {{"scan.handheld-hint" | translate}}
-            </div>
-
-            <app-location-reservations [currentTimeSlot]="location.currentTimeslot" [locationReservations]="reservations" [lastScanned]="lastScanned" [isManagement]="false">
-
+            </app-message>
+            <app-location-reservations 
+                [currentTimeSlot]="location.currentTimeslot" 
+                [locationReservations]="reservations" 
+                [lastScanned]="scannedReservation" 
+                [isManagement]="false">
             </app-location-reservations>
         </div>
     </div>
-
 </div>
 
-<app-modal #scanner>
-    <h2 modal-header>
-        {{ 'scan.phone' | translate }}
-    </h2>
-    <div *ngIf="locationReservationObs | async as reservations" modal-body>
-        <div *ngIf="!reservation" class="messages messages--info">
-            <i class="icon-info" aria-hidden="true"></i> {{'scan.mobile-hint' | translate}}
-        </div>
+<app-modal (onModalClose)="scannerComponent.disableScanner()" (onModalOpen)="scannerComponent.enableScanner()" #scannerModal>
+    <div modal-header>
+        <h2>{{ 'scan.phone' | translate }}</h2>
+    </div>
+    <div *ngIf="locationReservationObs$ | async as reservations" modal-body>
+        <app-message *ngIf="!selectedReservation">
+            {{'scan.mobile-hint' | translate}}
+        </app-message>
 
-        <app-scanner [class.hide]="reservation || error" (scanSuccess)="scanUser(reservations, $event)">
-
+        <app-message *ngIf="!scanningError && scannedReservation" type="status" class="w-100">
+            {{'scan.successText' | translate}}
+        </app-message>
+        <app-scanner
+            [class.hide]="selectedReservation || scanningError" 
+            (scanSuccess)="scanUser(reservations, $event)">
         </app-scanner>
     </div>
     <div modal-footer>
-        <div class="scanned-user" *ngIf="reservation">
-            <p>
-                User: {{reservation.user.firstName}} {{reservation.user.lastName}}
-            </p>
-            <p>
-                ID: {{ reservation.user.userId }}
-            </p>
-            <div class="d-flex gap-3">
-                <button class="button button-primary" (click)="confirm()">Confirm</button>
-                <button class="button button-secondary" (click)="reservation = null">Cancel</button>
+        <app-message *ngIf="selectedReservation" class="w-100">
+            {{'scan.confirmText' | translate: { 
+                name: selectedReservation.user.firstName + ' ' + selectedReservation.user.lastName,
+                id: selectedReservation.user.userId
+            } }}
+            <div class="d-flex gap-3 mt-3">
+                <button class="button button-primary" (click)="confirmReservation()">{{'scan.confirmButton' | translate}}</button>
+                <button class="button button-secondary" (click)="selectedReservation = null">{{'scan.cancelButton' | translate}}</button>
             </div>
-        </div>
-        <div class="messages messages--error" *ngIf="error">
-            <i class="icon-info" aria-hidden="true"></i>
-            <span>This user doesn't have a reservation. Please check in the list below.</span> <button class="button button-primary" (click)="error = null">Confirm</button>
-        </div>
+        </app-message>
+        <app-message *ngIf="scanningError" type="error" class="w-100">
+            <span>{{'scan.noReservation' | translate}}</span>
+            <button class="button button-primary mt-3" (click)="resetScanningError()">{{'scan.confirmButton' | translate}}</button>
+        </app-message>
     </div>
 </app-modal>
 
 <ng-template #loadingOrError>
-    <div *ngIf="loadingError | async; else loading" class="messages messages--error">
+    <div *ngIf="hasLoadingError; else loading" class="messages messages--error">
         {{'scan.locationDetails.errorMessageOnLoadingUsers' | translate}}
     </div>
     <ng-template #loading>
@@ -73,10 +72,9 @@
 </ng-template>
 
 <ng-template #loadingOrErrorForLocation>
-    <div *ngIf="locationLoadingSubject | async; else loading" class="messages messages--error">
+    <div *ngIf="isLoading; else loading" class="messages messages--error">
         {{'scan.locationDetails.errorMessageOnLoadingLocation' | translate}}
     </div>
-
     <ng-template #loading>
         <div class="messages messages--info">
             {{'general.waitingForServer' | translate}}

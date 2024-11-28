@@ -1195,7 +1195,13 @@
         "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
         "maybe": "Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw.",
         "warn-unattended": "Als je iemand op afwezig zet, wordt de plek opengesteld voor anderen om te reserveren.",
-        "already-present": "{{user}} was al als aanwezig gezet!"
+        "already-present": "{{user}} was al als aanwezig gezet!",
+        "noPermission": "Geef de nodige rechten aan de website om te scannen. Je camera wordt enkel geactiveerd wanneer deze pop-up zichtbaar is.",
+        "noReservation": "Deze gebruiker heeft geen reservatie voor deze locatie op dit moment.",
+        "confirmText": "Bevestig {{name}} met ID {{id}}?",
+        "successText": "De scan is gelukt!",
+        "confirmButton": "Bevestig",
+        "cancelButton": "Annuleer"
     },
     "Odisee": "Odisee Hogeschool",
     "Arteveldehogeschool": "Arteveldehogeschool",

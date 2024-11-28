@@ -1,5 +1,7 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import {Component, EventEmitter, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-modal',
@@ -8,23 +10,41 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class ModalComponent implements OnInit {
 
-    @ViewChild('modal') modalElement: TemplateRef<any>;
+    @ViewChild('modal') protected modalElement: TemplateRef<any>;
+
+    @Output() protected onModalOpen: EventEmitter<void>;
+    @Output() protected onModalClose: EventEmitter<void>;
 
     private openedModal: MatDialogRef<HTMLDivElement>;
+    private openedModalCloseSubscription: Subscription;
 
     constructor(private modalService: MatDialog) {
+        this.onModalOpen = new EventEmitter<void>();
+        this.onModalClose = new EventEmitter<void>();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
+        this.modalService.afterOpened.subscribe(() => {
+            this.onModalOpen.emit();
+        });
     }
 
-    open(): void {
-        this.openedModal = this.modalService.open(
-            this.modalElement
-        );
+    /**
+     * Opens the modal by using the modal service.
+     */
+    public open(): void {
+        this.openedModal = this.modalService.open(this.modalElement);
+
+        this.openedModalCloseSubscription = this.openedModal?.afterClosed().subscribe(() => {
+            this.onModalClose.emit();
+            this.openedModalCloseSubscription?.unsubscribe();
+        });
     }
 
-    close(): void {
+    /**
+     * Closes the currently opened modal if it exists.
+     */
+    public close(): void {
         this.openedModal?.close();
     }
 }

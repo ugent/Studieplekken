@@ -101,7 +101,7 @@ export class LocationCalendarComponent implements OnChanges {
      * Set up the suggestions for the list of timeslots.
      */
     public setupSuggestions(): void {
-        if (this.timeslots === undefined) {
+        if (this.timeslots === undefined || this.timeslots === null) {
             this.suggestions = [];
         } else {
             this.suggestions = this.timeslotGroupService.getSuggestions(

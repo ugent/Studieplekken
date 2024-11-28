@@ -12,11 +12,11 @@
         <div class="d-flex justify-content-between align-items-end mb-3 gap-3">
             <div>
                 <label for="search" class="fw-normal">
-                    {{ "management.locationDetails.calendar.reservations.searchUser"| translate }}
+                    {{'management.locationDetails.calendar.reservations.searchUser' | translate}}
                     <input
                         id="search"
                         type="text"
-                        class="form-control mt-2"
+                        class="form-control mt-3"
                         [(ngModel)]="searchTerm"
                         (ngModelChange)="updateSearchTerm(scanningError)"
                     />
@@ -91,7 +91,7 @@
                                 | translate) + ": "
                             }}</i></b
                         >{{
-                        (locationReservationToDelete.attended
+                        (locationReservationToDelete.isPresent()
                                 ? "general.yes"
                                 : "general.no"
                         ) | translate
@@ -224,5 +224,5 @@
 </app-modal>
 
 <ng-template #penaltyManager>
-    <app-user-penalty-manager [user]="penaltyManagerUser"></app-user-penalty-manager>
+    <app-user-penalty-manager [currentUser]="penaltyManagerUser"></app-user-penalty-manager>
 </ng-template>

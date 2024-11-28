@@ -140,7 +140,6 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 }
             },
             complete: () => {
-                // Update the calendar events.
                 void this.updateEvents();
             }
         });
