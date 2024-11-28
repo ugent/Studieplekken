@@ -6,7 +6,6 @@
 } as context">
     <ng-container *ngIf="context.location as location; else loading">
         <div class="panel">
-            <!-- TODO: these components don't need to have the observable passed -->
             <h2>
                 {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
             </h2>
@@ -53,17 +52,6 @@
             <app-location-description
                 [location]="locationObs$">
             </app-location-description>
-
-            <!-- Tags of the location -->
-            <h2>
-                {{'management.locationDetails.reminder.title' | translate}}
-            </h2>
-            
-            <hr/>
-            
-            <app-location-reminder
-                [location]="locationObs$">
-            </app-location-reminder>
         </div>
     </ng-container>
 

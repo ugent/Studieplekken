@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {environment} from '@env/environment';
 import {userWantsTLogInLocalStorageKey} from '@/app.constants';
 import {AuthenticationService} from '@/services/authentication/authentication.service';
@@ -10,20 +10,19 @@ import {AuthenticationService} from '@/services/authentication/authentication.se
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-    casFlowTriggerUrl = environment.casFlowTriggerUrl;
-    hoGentFlowTriggerUrl = environment.hoGentFlowTriggerUrl;
-    arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
-    odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
-    lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
-    stadGentFlowTriggerUrl = environment.stadGentFlowTriggerUrl;
-    kulFlowTriggerUrl = environment.kulFlowTriggerUrl;
-    otherFlowTriggerUrl = environment.otherFlowTriggerUrl;
+    public casFlowTriggerUrl: string = environment.casFlowTriggerUrl;
+    public hoGentFlowTriggerUrl: string = environment.hoGentFlowTriggerUrl;
+    public arteveldeHSFlowTriggerUrl: string = environment.arteveldeHSFlowTriggerUrl;
+    public odiseeFlowTriggerUrl: string = environment.odiseeFlowTriggerUrl;
+    public lucaFlowTriggerUrl: string = environment.lucaFlowTriggerUrl;
+    public stadGentFlowTriggerUrl: string = environment.stadGentFlowTriggerUrl;
+    public kulFlowTriggerUrl: string = environment.kulFlowTriggerUrl;
+    public otherFlowTriggerUrl: string = environment.otherFlowTriggerUrl;
 
     constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {
-        route.queryParamMap.subscribe((map) => {
+        route.queryParamMap.subscribe((map: ParamMap) => {            
             if (map.has('token')) {
                 localStorage.setItem('access_token', map.get('token'));
-
                 authService.login(true);
             }
         });

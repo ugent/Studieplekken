@@ -26,7 +26,7 @@ export class FormatStatusPipe implements PipeTransform {
      * @returns {Observable<string>} An observable that emits the string representation of the timeslot.
      */
     public transform(currentTimeslot: Timeslot): Observable<string> {
-        return merge(of(EMPTY), this.translate.onLangChange).pipe(
+        return of(this.translate.onLangChange).pipe(
             mergeMap(() => this.getValue(currentTimeslot))
         );
     }
