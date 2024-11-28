@@ -84,7 +84,7 @@ export class LocationCalendarComponent implements OnChanges {
      * Set up suggestions and events on input changes.
      * @param changes
      */
-    ngOnChanges(changes: SimpleChanges): void {
+    public ngOnChanges(changes: SimpleChanges): void {
         // Input: location and timeslots.
         // We calculate the suggestions from the timeslots and current location.
         if (changes.timeslots || changes.location) {
@@ -100,24 +100,26 @@ export class LocationCalendarComponent implements OnChanges {
     /**
      * Set up the suggestions for the list of timeslots.
      */
-    setupSuggestions(): void {
-        this.suggestions = this.timeslots ? this.timeslotGroupService.getSuggestions(
-            this.timeslots, this.location
-        ) : [];
+    public setupSuggestions(): void {
+        if (this.timeslots === undefined) {
+            this.suggestions = [];
+        } else {
+            this.suggestions = this.timeslotGroupService.getSuggestions(
+                this.timeslots,
+                this.location
+            );
+        }
     }
 
     /**
      * Set up the calendar event for each timeslot.
      */
-    setupEvents(): void {
+    public setupEvents(): void {
         const language = this.translate.currentLang;
 
-        // Map timeslots and suggested timeslots to calendar events and
-        // concatenate them.
+        // Map timeslots and suggested timeslots to calendar events and concatenate them.
         this.events = this.timeslots?.map(timeslot =>
-            this.timeslotCalendarEventService.timeslotToCalendarEvent(
-                timeslot, language
-            )
+            this.timeslotCalendarEventService.timeslotToCalendarEvent(timeslot, language)
         ).concat(
             this.suggestions.map(suggestion =>
                 this.timeslotCalendarEventService.suggestedTimeslotToCalendarEvent(
@@ -132,7 +134,7 @@ export class LocationCalendarComponent implements OnChanges {
     /**
      * Set up the reservations for the selected timeslot.
      */
-    setupReservations(): void {
+    public setupReservations(): void {
         this.locationReservationService.getLocationReservationsOfTimeslot(
             this.selected.timeslotSequenceNumber
         ).subscribe(reservations =>
@@ -144,7 +146,7 @@ export class LocationCalendarComponent implements OnChanges {
      * Handle a calendar event (timeslot) click event.
      * @param event
      */
-    timeslotPickedHandler(event: { timeslot: Timeslot }): void {
+    public timeslotPickedHandler(event: { timeslot: Timeslot }): void {
         const timeslot = event.timeslot;
 
         // event is a non-reservable calendar period.
@@ -161,7 +163,7 @@ export class LocationCalendarComponent implements OnChanges {
      * @param location
      * @param date
      */
-    hourPickedHandler(location: Location, date: Moment): void {
+    public hourPickedHandler(location: Location, date: Moment): void {
         const openingHour = moment(
             date?.format('HH:mm'), 'HH:mm'
         );
@@ -174,7 +176,7 @@ export class LocationCalendarComponent implements OnChanges {
     /**
      * Prepare the creation of a timeslot through a modal.
      */
-    prepareAdd(): void {
+    public prepareAdd(): void {
         this.isSuccess = null;
         this.selected = null;
         this.modifyModal.openModal();
@@ -183,7 +185,7 @@ export class LocationCalendarComponent implements OnChanges {
     /**
      * Prepare the update of a timeslot through a modal.
      */
-    prepareUpdate(): void {
+    public prepareUpdate(): void {
         this.isSuccess = null;
         this.modifyModal.openModal();
     }
@@ -191,7 +193,7 @@ export class LocationCalendarComponent implements OnChanges {
     /**
      * Prepare the deletion of a timeslot through a modal.
      */
-    prepareDelete(): void {
+    public prepareDelete(): void {
         this.isSuccess = null;
         this.deleteModal.open();
     }
@@ -199,12 +201,17 @@ export class LocationCalendarComponent implements OnChanges {
     /**
      * Prepare the copy of a timeslot through a modal.
      */
-    prepareCopy(): void {
+    public prepareCopy(): void {
         this.isSuccess = null;
         this.copyModal.open();
     }
 
-    storeAddTimeslot(timeslot: Timeslot): void {
+    /**
+     * Adds a new timeslot using the timeslot service and updates the component state accordingly.
+     * 
+     * @param {Timeslot} timeslot - The timeslot to be added.
+     */
+    public storeAddTimeslot(timeslot: Timeslot): void {
         this.isSuccess = undefined;
 
         this.timeslotService.addTimeslot(timeslot).subscribe(() => {
@@ -217,7 +224,7 @@ export class LocationCalendarComponent implements OnChanges {
         this.modifyModal.closeModal();
     }
 
-    storeUpdateTimeslot(timeslot: Timeslot): void {
+    public storeUpdateTimeslot(timeslot: Timeslot): void {
         this.isSuccess = undefined;
 
         this.timeslotService.updateTimeslot(timeslot).subscribe(() => {
@@ -230,7 +237,7 @@ export class LocationCalendarComponent implements OnChanges {
         this.modifyModal.closeModal();
     }
 
-    storeDelete(timeslot: Timeslot): void {
+    public storeDelete(timeslot: Timeslot): void {
         this.isSuccess = undefined;
         this.selected = null;
 
@@ -244,7 +251,7 @@ export class LocationCalendarComponent implements OnChanges {
         this.deleteModal.close();
     }
 
-    storeCopy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean): void {
+    public storeCopy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean): void {
         this.isSuccess = undefined;
         this.selected = null;
 
@@ -262,26 +269,26 @@ export class LocationCalendarComponent implements OnChanges {
         this.copyModal.close();
     }
 
-    approveAll(): void {
+    public approveAll(): void {
         this.getCurrentSuggestions().forEach(suggestion =>
             this.approve(suggestion.copy)
         );
     }
 
-    approve(timeslot: Timeslot): void {
+    public approve(timeslot: Timeslot): void {
         this.selected = null;
         this.timeslotService.addTimeslot(timeslot).subscribe(() => {
             this.updatedTimeslots.emit();
         });
     }
 
-    rejectAll(): void {
+    public rejectAll(): void {
         this.getCurrentSuggestions().forEach(suggestion =>
             this.reject(suggestion.copy)
         );
     }
 
-    reject(timeslot: Timeslot): void {
+    public reject(timeslot: Timeslot): void {
         this.selected = null;
         const currentSuggestion = this.getCurrentSuggestions().find(suggestion =>
             suggestion.copy === timeslot
@@ -295,7 +302,7 @@ export class LocationCalendarComponent implements OnChanges {
     }
 
 
-    timeslotGroupData(): TypeOption[] {
+    public timeslotGroupData(): TypeOption[] {
         const timeslots = this.timeslots;
 
         if (!timeslots) {
@@ -369,13 +376,13 @@ export class LocationCalendarComponent implements OnChanges {
         };
     }
 
-    isSuggestion(timeslot: Timeslot): boolean {
+    public isSuggestion(timeslot: Timeslot): boolean {
         return this.suggestions.some(suggestion =>
             timeslot.timeslotSequenceNumber === suggestion.copy.timeslotSequenceNumber
         );
     }
 
-    getCurrentSuggestions(): Suggestion[] {
+    public getCurrentSuggestions(): Suggestion[] {
         let granularity: StartOf = 'day';
 
         if (this.calendarViewStyle === CalendarView.Week) {

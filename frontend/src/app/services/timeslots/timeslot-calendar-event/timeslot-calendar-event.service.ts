@@ -113,7 +113,7 @@ export class TimeslotCalendarEventService {
 
         let cssClass = 'event ';
 
-        if (reservation !== null) {            
+        if (reservation !== null && reservation !== undefined) {            
             if (reservation.state === null || reservation.state === undefined) {
                 cssClass += 'selected';
             } else {

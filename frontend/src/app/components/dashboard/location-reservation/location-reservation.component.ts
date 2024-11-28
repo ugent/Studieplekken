@@ -124,23 +124,26 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.authenticationService.getLocationReservations().subscribe((reservations) => {
-            // Update the reservations list and sort it.
-            this.allReservations = reservations.filter(reservation =>
-                reservation.timeslot.locationId === this.location.locationId
-            ).sort((locationA: LocationReservation, locationB: LocationReservation) =>
-                Number(locationB.timeslot.getStartMoment()) - Number(locationA.timeslot.getStartMoment())
-            );
+        this.authenticationService.getLocationReservations().subscribe({
+            next: (reservations) => {
+                // Update the reservations list and sort it.
+                this.allReservations = reservations.filter(reservation =>
+                    reservation.timeslot.locationId === this.location.locationId
+                ).sort((locationA: LocationReservation, locationB: LocationReservation) =>
+                    Number(locationB.timeslot.getStartMoment()) - Number(locationA.timeslot.getStartMoment())
+                );
 
-            // Reset the new and removed reservations if requested.
-            if (reset === true) {
-                this.removedReservations = [];
-                this.newReservations = [];
+                // Reset the new and removed reservations if requested.
+                if (reset === true) {
+                    this.removedReservations = [];
+                    this.newReservations = [];
+                }
+            },
+            complete: () => {
+                // Update the calendar events.
+                void this.updateEvents();
             }
         });
-
-        // Update the calendar events.
-        void this.updateEvents();
     }
 
     

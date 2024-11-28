@@ -38,7 +38,7 @@ export class LocationDetailsManagementComponent implements OnInit {
         this.refresh$ = new ReplaySubject();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         const locationId = Number(
             this.route.snapshot.paramMap.get('locationId')
         );

@@ -88,14 +88,10 @@ export class AuthenticationService {
      *                get faq about the logged-in user if the variable userWantsToLogIn
      *                was set to 'true' by the LoginComponent.
      */
-    public login(redirect = false): void {
-        this.http.get<User>(api.whoAmI).pipe(
-            tap(() => this.hasAttemptedLogin = true)
-        ).subscribe(
-            (next) => {
-                this.userSubject.next(
-                    UserConstructor.newFromObj(next)
-                );
+    public login(redirect: boolean = false): void {
+        this.http.get<User>(api.whoAmI).pipe(tap(() =>this.hasAttemptedLogin = true)).subscribe(
+            (next: User) => {                
+                this.userSubject.next(UserConstructor.newFromObj(next));
 
                 this.penaltyService.getPenaltiesOfUserById(next.userId).subscribe(penalties =>
                     this.penaltySubject.next(penalties)

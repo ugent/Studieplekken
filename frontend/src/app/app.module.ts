@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS, provideHttpClient } fr
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -457,6 +458,7 @@ const routes: Routes = [
     ],
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         RouterModule.forRoot(routes, {}),
         TranslateModule.forRoot({
             defaultLanguage: 'nl',
@@ -490,9 +492,12 @@ const routes: Routes = [
         ZXingScannerModule,
         //NgxBarcodeModule,
         NgOptimizedImage,
+        HttpClientModule
     ],
     providers: [
         DatePipe,
+        FormatActionPipe,
+        FormatStatusPipe,
         provideHttpClient(),
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true },
