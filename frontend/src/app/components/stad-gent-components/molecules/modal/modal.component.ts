@@ -24,9 +24,6 @@ export class ModalComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.modalService.afterOpened.subscribe(() => {
-            this.onModalOpen.emit();
-        });
     }
 
     /**
@@ -34,6 +31,7 @@ export class ModalComponent implements OnInit {
      */
     public open(): void {
         this.openedModal = this.modalService.open(this.modalElement);
+        this.onModalOpen.emit();
 
         this.openedModalCloseSubscription = this.openedModal?.afterClosed().subscribe(() => {
             this.onModalClose.emit();

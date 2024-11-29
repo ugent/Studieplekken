@@ -64,9 +64,9 @@ export class ScanningLocationDetailsComponent implements OnInit {
         this.locationReservationObs$ = timer(0, 60 * 1000).pipe(
             switchMap(() =>
                 this.locationObs$.pipe(
-                    switchMap((location: Location) => 
+                    switchMap((location: Location) =>
                         this.reservationService.getLocationReservationsOfTimeslot(
-                            location.currentTimeslot.timeslotSequenceNumber
+                            location.currentTimeslot?.timeslotSequenceNumber
                         )
                     )
                 )
