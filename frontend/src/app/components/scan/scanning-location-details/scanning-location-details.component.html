@@ -30,10 +30,9 @@
         <h2>{{ 'scan.phone' | translate }}</h2>
     </div>
     <div *ngIf="locationReservationObs$ | async as reservations" modal-body>
-        <app-message *ngIf="!selectedReservation">
+        <app-message *ngIf="!selectedReservation && !scannedReservation">
             {{'scan.mobile-hint' | translate}}
         </app-message>
-
         <app-message *ngIf="!scanningError && scannedReservation" type="status" class="w-100">
             {{'scan.successText' | translate}}
         </app-message>
