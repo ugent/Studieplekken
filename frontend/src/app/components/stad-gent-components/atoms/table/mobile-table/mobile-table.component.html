@@ -12,12 +12,8 @@
                     *ngIf="column.columnContent(dataPoint) as content"
                     class="button button-secondary"
                     [disabled]="column.columnContent(dataPoint).disabled"
-                    (click)="onAction(i + nonActionColumns().length, dataPoint)"
-                >
-                    {{
-                    column.columnContent(dataPoint).fallbackContent ||
-                    column.columnContent(dataPoint).actionContent
-                    }}
+                    (click)="onAction(i + nonActionColumns().length, dataPoint)">
+                    {{ column.columnContent(dataPoint).actionContent || column.columnContent(dataPoint).fallbackContent }}
                 </button>
             </ng-container>
         </div>

@@ -40,7 +40,7 @@ export class MomentDateComponent implements ControlValueAccessor {
         this.isDisabled = isDisabled;
     }
 
-    public handleInputChange(event: InputEvent, part: 'date' | 'time'): void {
+    public handleInputChange(event: Event, part: 'date' | 'time'): void {
         const input = event.target as HTMLInputElement;
         const value = input.value;
 

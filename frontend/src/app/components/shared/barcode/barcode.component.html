@@ -1,6 +1,10 @@
 <div class="row center">
     <div class="barcode-container">
         <!-- NOTE: If you change the width here, also change the width in the scss file -->
-        <ngx-barcode *ngIf="user" [bc-value]="user.userId" [bc-display-value]="false" [bc-format]="'EAN'"></ngx-barcode>
+        <ngx-barcode6 *ngIf="user"
+            [bc-value]="user.userId"
+            [bc-display-value]="false"
+            [bc-format]="'EAN'">
+        </ngx-barcode6>
     </div>
 </div>

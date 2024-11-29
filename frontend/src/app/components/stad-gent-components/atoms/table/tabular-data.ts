@@ -26,7 +26,7 @@ export type ContentCell<T> = (a: T) => string;
 export type ActionColumn<T> = {
     type: 'actionColumn',
     columnHeader: string,
-    columnContent: ActionCell<T>,
+    columnContent: any,
     width?: number
 };
 

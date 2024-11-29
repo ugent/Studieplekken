@@ -6,7 +6,7 @@
         [ngClass]="variant" 
         [disabled]="isDisabled"
         [checked]="isChecked"
-        (change)="onCheckedChange($event.target.checked)" />
+        (change)="onInputChange($event)" />
     <label [for]="id">{{ label }}</label>
 
     <!-- Optional description based on variant -->

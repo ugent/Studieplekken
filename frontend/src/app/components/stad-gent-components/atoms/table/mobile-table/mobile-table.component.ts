@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ContentColumn, TabularData } from '../tabular-data';
+import { Column, ContentColumn, TabularData } from '../tabular-data';
 
 @Component({
   selector: 'app-mobile-table',
@@ -27,7 +27,8 @@ export class MobileTableComponent<T> implements OnInit {
     return this.tabularData.columns.filter(c => c.type === "actionColumn")
   }
 
-  translateColumnContent(column: ContentColumn<T>, data: T): string {
+  translateColumnContent(column: Column<T>, data: T): string {
+    column = column as ContentColumn<T>;
     return column.translateColumnContent ? column.translateColumnContent(data) : "";
   }
 

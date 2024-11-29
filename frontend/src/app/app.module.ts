@@ -119,6 +119,7 @@ import { CallToActionComponent } from '@/components/stad-gent-components/call-to
 import { CheckboxComponent } from '@/components/stad-gent-components/molecules/forms/checkbox/checkbox.component';
 import { AuthorizationGuardService } from '@/services/guard/authorization/authorization-guard.service';
 import { MessageComponent } from './components/stad-gent-components/molecules/message/message.component';
+import { NgxBarcode6Module } from 'ngx-barcode6';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -492,7 +493,7 @@ const routes: Routes = [
         MatTooltipModule,
         QRCodeModule,
         ZXingScannerModule,
-        //NgxBarcodeModule,
+        NgxBarcode6Module,
         NgOptimizedImage,
         HttpClientModule
     ],
