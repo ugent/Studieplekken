@@ -15,8 +15,8 @@ export class ModalComponent implements OnInit {
     @Output() protected onModalOpen: EventEmitter<void>;
     @Output() protected onModalClose: EventEmitter<void>;
 
-    private openedModal: MatDialogRef<HTMLDivElement>;
-    private openedModalCloseSubscription: Subscription;
+    private openedModal?: MatDialogRef<HTMLDivElement>;
+    private openedModalCloseSubscription?: Subscription;
 
     constructor(private modalService: MatDialog) {
         this.onModalOpen = new EventEmitter<void>();

@@ -1,11 +1,11 @@
 ### STAGE 1: Build ###
-FROM node:18.14.0-alpine AS build
+FROM node:18.18.0-alpine AS build
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm install -g @angular/cli@^14.0.0
+RUN npm install -g @angular/cli@^16.0.0
 RUN npm install --legacy-peer-deps
 
 COPY . .
