@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, TrackByFunction} from '@angular/core';
 import {Column, ContentColumn, TabularData} from '../tabular-data';
 
 @Component({
@@ -32,7 +32,7 @@ export class DesktopTableComponent<T> {
         return [];
     }
 
-    trackByMethod(index: number, _: T): number {
+    public trackByMethod<T>(index: number, _: T): number {
         return index;
     }
 }

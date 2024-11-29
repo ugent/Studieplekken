@@ -17,19 +17,19 @@ import {switchMap, take} from 'rxjs/operators';
 export class LocationDescriptionComponent implements OnInit {
     @Input() location: Observable<Location>;
 
-    editor: unknown = ClassicEditor;
+    public editor: any = ClassicEditor;
 
-    modelInDataLayer = {
+    public modelInDataLayer = {
         dutch: '',
         english: '',
     };
 
-    model = {
+    public model = {
         dutch: '',
         english: '',
     };
 
-    config = {
+    public config = {
         toolbar: [
             'heading',
             '|',
@@ -48,7 +48,7 @@ export class LocationDescriptionComponent implements OnInit {
         ],
     };
 
-    showUpdateSuccess: boolean = undefined;
+    public showUpdateSuccess: boolean = undefined;
 
     constructor(
         private locationDetailsService: LocationDetailsService,

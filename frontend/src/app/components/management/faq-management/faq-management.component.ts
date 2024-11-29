@@ -26,7 +26,7 @@ export class FaqManagementComponent extends BaseManagementComponent<FaqItem> {
     protected $faqCategories: Observable<FaqCategory[]>;
 
     /* State */
-    protected editor: unknown = ClassicEditor;
+    protected editor: any = ClassicEditor;
 
     constructor(
         private formBuilder: FormBuilder,
