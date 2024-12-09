@@ -1,0 +1,11 @@
+<div class="card">
+    <div>
+        <h3>{{ title }}</h3>
+        <div>
+            <ng-content select="[card-content]"></ng-content>
+        </div>
+    </div>
+    <div class="actions" *ngIf="hasActions" #actionsContainer>
+        <ng-content select="[card-actions]"></ng-content>
+    </div>
+</div>

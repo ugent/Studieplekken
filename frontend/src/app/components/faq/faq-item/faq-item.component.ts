@@ -3,7 +3,7 @@ import {FaqService} from '@/services/api/faq/faq.service';
 import {FaqItem} from '@/model/FaqItem';
 import {Observable} from 'rxjs';
 import {ActivatedRoute, ParamMap} from '@angular/router';
-import {switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -13,10 +13,10 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class FaqItemComponent implements OnInit {
 
-    /* Observables */
-    protected $item: Observable<FaqItem>;
+    protected itemObs$: Observable<FaqItem>;
 
-    /* State */
+    protected loading: boolean = true;
+    protected error: boolean = false;
     protected locale: string;
 
     constructor(
@@ -31,10 +31,18 @@ export class FaqItemComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {
-        this.$item = this.route.paramMap.pipe(
+    public ngOnInit(): void {
+        this.itemObs$ = this.route.paramMap.pipe(
             switchMap((params: ParamMap) =>
-                this.faqService.getItem(params.get('id'))
+                this.faqService.getItem(params.get('id')).pipe(
+                    tap((item: FaqItem) => {
+                        if (!item) {
+                            this.error = true;
+                        }
+
+                        this.loading = false;
+                    })
+                )
             )
         );
     }

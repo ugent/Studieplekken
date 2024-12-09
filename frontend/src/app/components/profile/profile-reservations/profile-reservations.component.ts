@@ -1,14 +1,13 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {
-    LocationReservationsService
-} from '@/services/api/location-reservations/location-reservations.service';
-import {LocationReservation, LocationReservationState} from '@/model/LocationReservation';
-import {User} from '@/model/User';
-import {LocationService} from 'src/app/services/api/locations/location.service';
-import {map} from 'rxjs/operators';
-import {BaseManagementComponent} from '../../management//base-management.component';
-import {DeleteAction, TableAction, TableMapper} from 'src/app/model/Table';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { LocationReservationsService } from '@/services/api/location-reservations/location-reservations.service';
+import { LocationReservation, LocationReservationState } from '@/model/LocationReservation';
+import { User } from '@/model/User';
+import { LocationService } from 'src/app/services/api/locations/location.service';
+import { map } from 'rxjs/operators';
+import { BaseManagementComponent } from '../../management//base-management.component';
+import { DeleteAction, TableAction, TableMapper } from 'src/app/model/Table';
+import { TranslateService } from '@ngx-translate/core';
+import { Location } from '@/model/Location';
 
 @Component({
     selector: 'app-profile-reservations',
@@ -18,47 +17,55 @@ import {TranslateService} from '@ngx-translate/core';
 export class ProfileReservationsComponent extends BaseManagementComponent<LocationReservation> {
 
     @Input() user: User;
-    @Input() reservations: LocationReservation[];
+    @Input() locations: Location[] = [];
+    @Input() reservations: LocationReservation[] = [];
     @Input() isManagement = false;
 
     @Output() updatedReservations = new EventEmitter<void>();
 
     constructor(
-        private locationService: LocationService,
         private reservationService: LocationReservationsService,
         private translateService: TranslateService
     ) {
         super();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.refresh$.subscribe(() =>
             this.updatedReservations.emit()
         );
     }
 
-    storeDelete(item: LocationReservation): void {
+    private getLocation(locationId: number): Location {
+        return this.locations.find(location => location.locationId === locationId);
+    }
+
+    public storeDelete(item: LocationReservation): void {
         this.sendBackendRequest(
             this.reservationService.deleteLocationReservation(item)
         );
     }
 
-    getTableMapper(): TableMapper<LocationReservation> {
-        return (reservation: LocationReservation) => ({
-            'profile.reservations.locations.table.header.locationName': this.locationService.getLocation(
-                reservation.timeslot.locationId
-            ).pipe(
-                map(location => location.name)
-            ),
-            'profile.reservations.locations.table.header.reservationDate': reservation.timeslot.timeslotDate.format('YYYY/MM/DD'),
-            'profile.reservations.locations.table.header.beginHour': reservation.timeslot.openingHour.format('HH:mm'),
-            'profile.reservations.locations.table.header.state': this.translateService.stream(
-                'profile.reservations.locations.table.attended.' + reservation.state
-            )
-        });
+    public getTableMapper(): TableMapper<LocationReservation> {
+        return (reservation: LocationReservation) => {
+            let locationName = this.getLocation(reservation.timeslot.locationId)?.name;
+
+            if (locationName === undefined || locationName === null) {
+                locationName = '/';
+            }
+
+            return {
+                'profile.reservations.locations.table.header.locationName': this.getLocation(reservation.timeslot.locationId).name,
+                'profile.reservations.locations.table.header.reservationDate': reservation.timeslot.timeslotDate.format('YYYY/MM/DD'),
+                'profile.reservations.locations.table.header.beginHour': reservation.timeslot.openingHour.format('HH:mm'),
+                'profile.reservations.locations.table.header.state': this.translateService.stream(
+                    'profile.reservations.locations.table.attended.' + reservation.state
+                )
+            }
+        };
     }
 
-    getTableActions(): TableAction<LocationReservation>[] {
+    public getTableActions(): TableAction<LocationReservation>[] {
         return [
             new DeleteAction((reservation: LocationReservation) => {
                 this.prepareDelete(reservation);

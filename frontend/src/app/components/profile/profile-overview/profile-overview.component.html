@@ -63,20 +63,19 @@
             </div>
         </div>
     </form>
-    <div class="card">
-        <div class="messages messages--info m-0">
-            <i class="icon-info" aria-hidden="true"></i>
-            {{'profile.overview.qrcode' | translate}}
-        </div>
-        <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
-            <!-- QR code of userId -->
-            <app-qrcode
-                [user]="user">
-            </app-qrcode>
-            <!-- Barcode of userId -->
-            <app-barcode
-                [user]="user">
-            </app-barcode>
-        </div>
-    </div>
+    <app-card [title]="'profile.overview.qrcode-title' | translate">
+        <ng-container card-content>
+            <app-message>
+                {{'profile.overview.qrcode' | translate}}
+            </app-message>
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
+                <app-qrcode
+                    [user]="user">
+                </app-qrcode>
+                <app-barcode
+                    [user]="user">
+                </app-barcode>
+            </div>
+        </ng-container>
+    </app-card>
 </ng-container>

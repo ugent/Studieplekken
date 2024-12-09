@@ -3,7 +3,7 @@ import {TableAction, TableColumn, TableData, TableMapper} from '@/model/Table';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {debounceTime, first, takeUntil} from 'rxjs/operators';
 import {isObservable, ReplaySubject, Subject} from 'rxjs';
-import {escapeRegex, genericSorter, OrderDirection} from '@/util/Util';
+import {escapeRegex, genericSorter, OrderDirection} from '@/helpers/Util';
 
 @Component({
     selector: 'app-management-table',

@@ -23,7 +23,7 @@ import {
 import {Location} from '@/model/Location';
 import {LocationReservation} from '@/model/LocationReservation';
 import {Timeslot} from '@/model/Timeslot';
-import {booleanSorter} from '@/util/Util';
+import {booleanSorter} from '@/helpers/Util';
 import {ModalComponent} from '@/components/stad-gent-components/molecules/modal/modal.component';
 import {
     LocationAddTimeslotDialogComponent
