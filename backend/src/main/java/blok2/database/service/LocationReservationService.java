@@ -131,6 +131,7 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
     @Override
+    @Deprecated
     public LocationReservation addLocationReservation(LocationReservation locationReservation) {
         return locationReservationRepository.saveAndFlush(locationReservation);
     }
