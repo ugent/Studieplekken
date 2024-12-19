@@ -1,81 +1,36 @@
 <ng-container>
     <!-- Page title -->
-    <h3>{{'profile.overview.title' | translate}}</h3>
-    <hr> <!-- User overview in a form -->
-    <form class="center" disabled>
-        <!-- First name -->
-        <div class="row">
-            <div class="col">
-                <label class="control-label" for="firstName">
-                    {{'profile.overview.form.firstName' | translate}}
-                    <input class="form-control" id="firstName" type="text" [value]="user.firstName" disabled>
-                </label>
+    <app-card>
+        <div class="row gap-2 gap-md-0">
+            <div class="col-md d-flex justify-content-center">
+                <img [src]="logoSource" class="object-fit-contain" alt="Institution">
+            </div>
+            <div class="col-md-8 d-flex flex-column justify-content-center">
+                <h4>
+                    {{'profile.overview.title' | translate}}
+                </h4>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="icon-user font-xl" style="font-size: 24px"></i>
+                    <input type="text" class="form-control" [value]="user.getFullName()" disabled> 
+                </div>
+                <div class="d-flex align-items-center gap-2 mt-3">
+                    <i class="icon-envelope font-xl" style="font-size: 24px"></i>
+                    <input type="text" class="form-control" [value]="user.mail" disabled> 
+                </div>
             </div>
         </div>
-
-        <!-- Last name -->
-        <div class="row">
-            <div class="col">
-                <label class="control-label" for="lastName">
-                    {{'profile.overview.form.lastName' | translate}}
-                    <input class="form-control" id="lastName" type="text" [value]="user.lastName" disabled>
-                </label>
-            </div>
-        </div>
-
-        <!-- Penalty Points -->
-        <div class="row">
-            <div class="col">
-                <label class="control-label" for="penaltyPoints">
-                    {{'profile.overview.form.penaltyPoints' | translate}}
-                    <input class="form-control" id="penaltyPoints" type="number" [value]="user.penaltyPoints" disabled>
-                </label>
-            </div>
-        </div>
-
-        <!-- Institution -->
-        <div class="row">
-            <div class="col">
-                <label class="control-label" for="institution">
-                    {{'profile.overview.form.institution' | translate}}
-                    <input class="form-control" id="institution" type="text" [value]="user.institution" disabled>
-                </label>
-
-            </div>
-        </div>
-
-        <!-- Mail -->
-        <div class="row">
-            <div class="col">
-                <label class="control-label" for="mail">
-                    {{'profile.overview.form.mail' | translate}}
-                    <input class="form-control" id="mail" type="email" [value]="user.mail" disabled>
-                </label>
-            </div>
-        </div>
-    </form>
-    <form [formGroup]="settingsFormGroup" class="center">
-        <!-- Receive mail confirming reservations 24hrs -->
-        <div class="row">
-            <div class="col">
-                <input class="form-control" id="receiveMailConfirmation" type="checkbox" formControlName="receiveMailConfirmation"
-                       (change)="storeUpdate()"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
-            </div>
-        </div>
-    </form>
+    </app-card>
     <app-card [title]="'profile.overview.qrcode-title' | translate">
-        <ng-container card-content>
-            <app-message>
-                {{'profile.overview.qrcode' | translate}}
-            </app-message>
-            <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
-                <app-qrcode
-                    [user]="user">
-                </app-qrcode>
-                <app-barcode
-                    [user]="user">
-                </app-barcode>
-            </div>
-        </ng-container>
+        <app-message>
+            {{'profile.overview.qrcode' | translate}}
+        </app-message>
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
+            <app-qrcode
+                [user]="user">
+            </app-qrcode>
+            <app-barcode
+                [user]="user">
+            </app-barcode>
+        </div>
     </app-card>
 </ng-container>

@@ -10,28 +10,36 @@ import {UserService} from '@/services/api/users/user.service';
 })
 export class ProfileOverviewComponent implements OnInit {
 
-    @Input() user: User;
-
-    protected settingsFormGroup: FormGroup;
+    @Input()
+    protected user: User;
+    protected logoSource: string;
 
     constructor(
         private userService: UserService
     ) {
     }
 
-    ngOnInit(): void {
-        this.setupForm();
+    public ngOnInit(): void {
+        this.logoSource = this.getLogoSource(this.user.institution);
     }
 
-    setupForm(): void {
-        this.settingsFormGroup = new FormGroup({
-            receiveMailConfirmation: new FormControl(this.user.userSettings.receiveMailConfirmation)
-        });
+    /**
+     * Handles the error that occurs when loading the logo.
+     * Sets the logo source to a default or fallback value.
+     * 
+     * @protected
+     */
+    protected handleLogoError(): void {
+        this.logoSource = this.getLogoSource('Other');
     }
 
-    storeUpdate(userSettings: UserSettings = this.settingsFormGroup.value): void {
-        this.userService.updateUserSettings(
-            this.user.userId, userSettings
-        ).subscribe();
+    /**
+     * Constructs the source path for a logo image.
+     *
+     * @param logo - The name of the logo file without extension.
+     * @returns The full path to the logo image in the assets directory.
+     */
+    private getLogoSource(logo: string): string {
+        return '/assets/images/logo/' + logo + '_resized.png';
     }
 }

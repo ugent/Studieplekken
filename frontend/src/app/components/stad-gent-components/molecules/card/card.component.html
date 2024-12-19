@@ -1,11 +1,13 @@
 <div class="card">
     <div>
-        <h3>{{ title }}</h3>
+        <h3 *ngIf="title">
+            {{ title }}
+        </h3>
         <div>
-            <ng-content select="[card-content]"></ng-content>
+            <ng-content></ng-content>
         </div>
     </div>
-    <div class="actions" *ngIf="hasActions" #actionsContainer>
-        <ng-content select="[card-actions]"></ng-content>
+    <div class="actions" *ngIf="cardActionsContent">
+        <ng-container *ngTemplateOutlet="cardActionsContent"></ng-container>
     </div>
 </div>

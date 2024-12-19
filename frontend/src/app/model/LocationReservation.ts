@@ -1,6 +1,7 @@
-import {User, UserConstructor} from './User';
-import {Timeslot} from './Timeslot';
-import {Moment} from 'moment';
+import { User, UserConstructor } from './User';
+import { Timeslot } from './Timeslot';
+import { Moment } from 'moment';
+import { Location, LocationConstructor } from './Location';
 import * as moment from 'moment';
 
 export enum LocationReservationState {
@@ -16,8 +17,9 @@ export class LocationReservation {
     constructor(
         public user: User,
         public timeslot: Timeslot,
-        public state?: LocationReservationState,
-        public createdAt?: Moment
+        public state: LocationReservationState = LocationReservationState.APPROVED,
+        public createdAt: Moment = moment(),
+        public location?: Location
     ) {
     }
 
@@ -29,7 +31,8 @@ export class LocationReservation {
             UserConstructor.newFromObj(json.user),
             Timeslot.fromJSON(json.timeslot),
             json.state,
-            json.createdAt ? moment(json.createdAt) : null
+            json.createdAt,
+            LocationConstructor.newFromObj(json.location)
         );
     }
 

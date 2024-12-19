@@ -1,0 +1,66 @@
+<div class="responsive-table">
+    <div class="table-wrapper">
+
+        <div class="table-controls">
+            <!-- Global Search -->
+            <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (input)="applyFilters()"
+                placeholder="Global Search"
+                class="search-input"
+            />
+    
+            <!-- Items Per Page Dropdown -->
+            <select [(ngModel)]="itemsPerPage" (ngModelChange)="changeItemsPerPage($event.target.value ?? 0)">
+                <option *ngFor="let option of itemsPerPageOptions" [value]="option">{{ option }}</option>
+            </select>
+        </div>
+    
+        <table class="table">
+            <thead>
+                <ng-container *ngIf="headerTemplate">
+                    <ng-container
+                        *ngTemplateOutlet="headerTemplate;
+                            context: { 
+                                onSort: onSort.bind(this), 
+                                sortField: sortField, 
+                                sortOrder: sortOrder 
+                            }">
+                    </ng-container>
+                </ng-container>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="bodyTemplate">
+                    <ng-container *ngFor="let item of filteredItems">
+                        <ng-container 
+                            *ngTemplateOutlet="bodyTemplate; context: { $implicit: item }">
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
+    
+        <!-- Empty Message -->
+        <div *ngIf="filteredItems.length === 0" class="empty-message">
+            No records found.
+        </div>
+    
+        <!-- Pagination Controls -->
+        <div class="pagination-controls">
+            <button 
+                (click)="changePage(currentPage - 1)"
+                [disabled]="currentPage === 1">
+                Previous
+            </button>
+            <span>
+                Page {{ currentPage }}
+            </span>
+            <button 
+                (click)="changePage(currentPage + 1)" 
+                [disabled]="filteredItems.length < itemsPerPage">
+                Next
+            </button>
+        </div>
+    </div>
+</div>

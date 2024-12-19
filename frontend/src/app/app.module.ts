@@ -121,6 +121,8 @@ import { AuthorizationGuardService } from '@/services/guard/authorization/author
 import { MessageComponent } from './components/stad-gent-components/molecules/message/message.component';
 import { NgxBarcode6Module } from 'ngx-barcode6';
 import { CardComponent } from './components/stad-gent-components/molecules/card/card.component';
+import { NewTableComponent } from './components/stad-gent-components/atoms/new-table/new-table.component';
+import { TableColumnComponent } from './components/stad-gent-components/atoms/new-table/table-column/table-column.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -460,6 +462,8 @@ const routes: Routes = [
         CheckboxComponent,
         MessageComponent,
         CardComponent,
+        NewTableComponent,
+        TableColumnComponent,
     ],
     imports: [
         BrowserModule,

@@ -2,8 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LocationReservationsService } from '@/services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationState } from '@/model/LocationReservation';
 import { User } from '@/model/User';
-import { LocationService } from 'src/app/services/api/locations/location.service';
-import { map } from 'rxjs/operators';
 import { BaseManagementComponent } from '../../management//base-management.component';
 import { DeleteAction, TableAction, TableMapper } from 'src/app/model/Table';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,12 +14,20 @@ import { Location } from '@/model/Location';
 })
 export class ProfileReservationsComponent extends BaseManagementComponent<LocationReservation> {
 
-    @Input() user: User;
-    @Input() locations: Location[] = [];
-    @Input() reservations: LocationReservation[] = [];
-    @Input() isManagement = false;
+    @Input()
+    protected user: User;
 
-    @Output() updatedReservations = new EventEmitter<void>();
+    @Input() 
+    protected locations: Location[] = [];
+
+    @Input() 
+    protected reservations: LocationReservation[] = [];
+
+    @Input()
+    protected isManagement = false;
+
+    @Output() 
+    protected updatedReservations = new EventEmitter<void>();
 
     constructor(
         private reservationService: LocationReservationsService,
@@ -31,13 +37,15 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
     }
 
     public ngOnInit(): void {
+        this.reservations.forEach(reservation => {
+            reservation.location = this.locations.find(location =>
+                location.locationId === reservation.timeslot.locationId
+            );
+        });
+
         this.refresh$.subscribe(() =>
             this.updatedReservations.emit()
         );
-    }
-
-    private getLocation(locationId: number): Location {
-        return this.locations.find(location => location.locationId === locationId);
     }
 
     public storeDelete(item: LocationReservation): void {
@@ -48,14 +56,8 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
 
     public getTableMapper(): TableMapper<LocationReservation> {
         return (reservation: LocationReservation) => {
-            let locationName = this.getLocation(reservation.timeslot.locationId)?.name;
-
-            if (locationName === undefined || locationName === null) {
-                locationName = '/';
-            }
-
             return {
-                'profile.reservations.locations.table.header.locationName': this.getLocation(reservation.timeslot.locationId).name,
+                'profile.reservations.locations.table.header.locationName': reservation.location.name,
                 'profile.reservations.locations.table.header.reservationDate': reservation.timeslot.timeslotDate.format('YYYY/MM/DD'),
                 'profile.reservations.locations.table.header.beginHour': reservation.timeslot.openingHour.format('HH:mm'),
                 'profile.reservations.locations.table.header.state': this.translateService.stream(

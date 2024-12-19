@@ -1,19 +1,14 @@
-import { Component, Input, AfterContentInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, AfterContentInit, ElementRef, ViewChild, ContentChild, ContentChildren, QueryList, TemplateRef } from '@angular/core';
 
 @Component({
     selector: 'app-card',
     templateUrl: './card.component.html',
     styleUrls: ['./card.component.scss']
 })
-export class CardComponent implements AfterContentInit {
+export class CardComponent {
     @Input() 
-    protected title: string = 'Default Title';
+    protected title: string = '';  
 
-    @ViewChild('actionsContainer', { static: false })
-    protected actionsContainer!: ElementRef<HTMLDivElement>;
-    protected hasActions: boolean = false;
-
-    public ngAfterContentInit() {
-        this.hasActions = !!this.actionsContainer.nativeElement.children.length;
-    }
+    @ContentChild('cardActions', { static: false }) 
+    protected cardActionsContent?: TemplateRef<any>;
 }
