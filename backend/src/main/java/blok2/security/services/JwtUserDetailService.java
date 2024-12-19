@@ -22,7 +22,7 @@ public class JwtUserDetailService {
 
     public User loadUserDetails(String token) throws UsernameNotFoundException {
         String id = this.jwtService.getId(token);
-        // Try to find the user with given id in the application database
+
         try {
             User user = this.userDao.getUserById(id);
             return user;
