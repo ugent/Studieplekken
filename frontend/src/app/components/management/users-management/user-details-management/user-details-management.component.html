@@ -4,7 +4,8 @@
     penalties: penaltiesObs$ | async,
     reservations: reservationsObs$ | async,
     addedAuthorities: addedAuthoritiesObs$ | async,
-    addableAuthorities: addableAuthoritiesObs$ | async
+    addableAuthorities: addableAuthoritiesObs$ | async,
+    locations: locationsObs$ | async
 } as context;">
     <ng-container *ngIf="context.currentUser as currentUser; else notFound">
         <!-- Form with details of the user -->
@@ -26,6 +27,7 @@
             <app-profile-reservations
                     [user]="currentUser"
                     [reservations]="context.reservations"
+                    [locations]="context.locations"
                     [isManagement]="true">
             </app-profile-reservations>
         </div>
