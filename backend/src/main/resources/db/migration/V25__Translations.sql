@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS translations;
+DROP TABLE IF EXISTS translations CASCADE;
+DROP TABLE IF EXISTS translatables CASCADE;
 
 CREATE TABLE translatables
 (

@@ -43,22 +43,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authManager;
+
     @Autowired
     private BackdoorUserDetailService backdoorDetailService;
+
     @Autowired
     private JwtUserDetailService jwtUserDetailService;
+
     @Autowired
     private JwtService jwtService;
+
     @Autowired
     private  Environment environment;
 
     private LogoutSuccessHandler logoutSuccessHandler;
 
     @Autowired
-    public SecurityConfiguration(
-        @Qualifier("customLogoutSuccessHandler") 
-        LogoutSuccessHandler logoutSuccessHandler
-    ) {
+    public SecurityConfiguration(@Qualifier("customLogoutSuccessHandler") LogoutSuccessHandler logoutSuccessHandler) {
         this.logoutSuccessHandler = logoutSuccessHandler;
     }
 
@@ -81,6 +82,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        // Register the csrf token repository.
         http.csrf().csrfTokenRepository(csrfTokenRepository());
 
         // Register the logout flow.
@@ -96,6 +98,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.addFilterAfter(new CustomAuthenticationFilter(authManager), JwtAuthenticationFilter.class);
         }
 
+        // Disable CSRF tokens.
+        // TODO(ewverlin): why is this disabled? This is a security risk.
         http.csrf().disable();
     }
 

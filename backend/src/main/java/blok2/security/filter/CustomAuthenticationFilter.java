@@ -23,6 +23,19 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         this.authManager = authManager;
     }
 
+    /**
+     * Filters incoming HTTP requests and processes custom authentication.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException if an error occurs during the filtering process
+     * @throws IOException if an I/O error occurs during the filtering process
+     *
+     * This method checks for a custom header "AS-USER" in the request. If the header is present and the current
+     * authentication is not null, it verifies if the authenticated user is an admin. If the user is an admin,
+     * it creates a new custom authentication token and sets it in the security context.
+     */
     @Override
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,
