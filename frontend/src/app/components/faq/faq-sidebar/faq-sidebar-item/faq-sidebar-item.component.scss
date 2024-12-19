@@ -11,12 +11,14 @@
     .faq-sidebar-item-index {
         width: 30px;
         height: 30px;
+        font-size: 24px;
         display: flex;
         justify-content: center;
         align-items: center;
-        background: #0071a1;
+        border: 2px solid #0071a1;
         border-radius: 50%;
-        color: white;
+        color: #0071a1;
+        background: white;
     }
 
     &:hover{

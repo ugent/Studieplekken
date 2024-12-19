@@ -1,12 +1,10 @@
-<ng-container *ngIf="{
-    selected: selectedSub$ | async
-} as context">
-    <!-- Title -->
+<ng-container>
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="m-0">
             {{ 'profile.reservations.locations.title' | translate }}
         </h3>
     </div>
+
     <!-- List -->
     <app-management-table
         [stateless]="false"
@@ -14,6 +12,7 @@
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
     </app-management-table>
+
     <!-- Modal view to ask whether the user is sure to delete the reservation -->
     <app-modal #remove>
         <!-- Header -->
@@ -25,7 +24,7 @@
 
         <!-- Body -->
         <ng-container *ngIf="user" modal-body>
-            <ng-container *ngIf="context.selected as reservation">
+            <ng-container *ngIf="selectedSub$ | async as reservation">
                 <p>
                     {{'management.reservations.location.deleteModal.body' | translate}}
                 </p>
@@ -46,8 +45,8 @@
 
         <!-- Footer -->
         <div modal-footer>
-            <div>
-                <button type="button" class="button button-primary" (click)="storeDelete(context.selected)">
+            <div *ngIf="selectedSub$ | async as reservation">
+                <button type="button" class="button button-primary" (click)="storeDelete(reservation)">
                     {{'management.reservations.location.deleteModal.yesButton' | translate}}
                 </button>
             </div>

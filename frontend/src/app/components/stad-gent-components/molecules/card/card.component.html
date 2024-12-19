@@ -1,0 +1,13 @@
+<div class="card">
+    <div>
+        <h3 *ngIf="title">
+            {{ title }}
+        </h3>
+        <div>
+            <ng-content></ng-content>
+        </div>
+    </div>
+    <div class="actions" *ngIf="cardActionsContent">
+        <ng-container *ngTemplateOutlet="cardActionsContent"></ng-container>
+    </div>
+</div>

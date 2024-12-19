@@ -24,8 +24,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MarkdownModule } from 'ngx-markdown';
 import { QRCodeModule } from 'angularx-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { FormatActionPipe } from '@/pipes/FormatActionPipe';
-import { FormatStatusPipe } from '@/pipes/FormatStatusPipe';
+import { FormatActionPipe } from '@/helpers/pipes/FormatActionPipe';
+import { FormatStatusPipe } from '@/helpers/pipes/FormatStatusPipe';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 import { TokenInterceptor } from './services/authentication/token.interceptor';
 import { AppComponent } from '@/app.component';
@@ -106,8 +106,8 @@ import { FaqSearchComponent } from '@/components/faq/faq-search/faq-search.compo
 import { FaqItemComponent } from '@/components/faq/faq-item/faq-item.component';
 import { FaqSidebarComponent } from '@/components/faq/faq-sidebar/faq-sidebar.component';
 import { FaqSidebarItemComponent } from '@/components/faq/faq-sidebar/faq-sidebar-item/faq-sidebar-item.component';
-import { LoadingComponent } from '@/components/status/loading/loading.component';
-import { EmptyComponent } from '@/components/status/empty/empty.component';
+import { LoadingComponent } from '@/components/shared/status/loading/loading.component';
+import { EmptyComponent } from '@/components/shared/status/empty/empty.component';
 import { TeaserComponent } from '@/components/stad-gent-components/molecules/teaser/teaser.component';
 import { FaqManagementComponent } from '@/components/management/faq-management/faq-management.component';
 import { CategoriesManagementComponent } from '@/components/management/faq-management/categories-management/categories-management.component';
@@ -120,6 +120,9 @@ import { CheckboxComponent } from '@/components/stad-gent-components/molecules/f
 import { AuthorizationGuardService } from '@/services/guard/authorization/authorization-guard.service';
 import { MessageComponent } from './components/stad-gent-components/molecules/message/message.component';
 import { NgxBarcode6Module } from 'ngx-barcode6';
+import { CardComponent } from './components/stad-gent-components/molecules/card/card.component';
+import { NewTableComponent } from './components/stad-gent-components/atoms/new-table/new-table.component';
+import { TableColumnComponent } from './components/stad-gent-components/atoms/new-table/table-column/table-column.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -458,6 +461,9 @@ const routes: Routes = [
         CallToActionComponent,
         CheckboxComponent,
         MessageComponent,
+        CardComponent,
+        NewTableComponent,
+        TableColumnComponent,
     ],
     imports: [
         BrowserModule,

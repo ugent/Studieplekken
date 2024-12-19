@@ -1,6 +1,6 @@
 // A table is represented by an object type:
 // The object keys are the table columns, with the values being the data itself.
-import {OrderDirection} from '@/util/Util';
+import {OrderDirection} from '@/helpers/Util';
 
 export type TableData<T> = {
     mapped: object,

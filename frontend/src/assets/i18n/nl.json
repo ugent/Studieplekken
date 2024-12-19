@@ -236,7 +236,8 @@
             "information": "Help",
             "navigation": "Navigatie",
             "general": "Algemeen",
-            "faq": "Veelgestelde vragen"
+            "faq": "Veelgestelde vragen",
+            "info": "Informatie"
         }
     },
     "language": {
@@ -1069,6 +1070,7 @@
                 "studentNumber": "Studentennummer",
                 "receiveMailConfirmation": "Ontvang bevestigingsmails van reservaties"
             },
+            "qrcode-title": "QR- en barcode",
             "qrcode": "Je kan deze QR- of barcode tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden.",
             "loading": "Je profiel wordt geladen..."
         },

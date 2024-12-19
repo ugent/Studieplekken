@@ -4,7 +4,7 @@ import {ActionLogService} from 'src/app/services/api/action-log/action-log.servi
 import {Observable, ReplaySubject} from 'rxjs';
 import {TableComponent} from '@/contracts/table.component.interface';
 import {TableAction, TableMapper} from '@/model/Table';
-import {FormatActionPipe} from '@/pipes/FormatActionPipe';
+import {FormatActionPipe} from '@/helpers/pipes/FormatActionPipe';
 
 
 @Component({

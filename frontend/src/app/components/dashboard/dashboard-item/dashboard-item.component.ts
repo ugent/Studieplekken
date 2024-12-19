@@ -17,13 +17,13 @@ export class DashboardItemComponent implements OnInit {
     @Input() location: Location;
     @Input() nextReservableFrom: Moment;
 
-    imageUrlErrorOccurred = false;
-    altImageUrl = defaultLocationImage;
+    public imageUrlErrorOccurred = false;
+    public altImageUrl = defaultLocationImage;
 
-    assignedTags: LocationTag[];
+    public assignedTags: LocationTag[];
 
-    currentLang: string;
-    tagsInCurrentLang: string[]; // e.g. 'tag1, tag2, tag3', set by auxiliary setupTagsInCurrentLang()
+    public currentLang: string;
+    public tagsInCurrentLang: string[];
 
     /* Subscriptions */
     constructor(
@@ -32,7 +32,7 @@ export class DashboardItemComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.currentLang = this.translate.currentLang;
         this.translate.onLangChange.subscribe(() => {
             this.currentLang = this.translate.currentLang;
@@ -43,17 +43,17 @@ export class DashboardItemComponent implements OnInit {
         this.setupTagsInCurrentLang();
     }
 
-    locationStatusColorClass(): string {
+    public locationStatusColorClass(): string {
         return this.location.currentTimeslot?.isCurrent()
             ? 'open'
             : 'closed';
     }
 
-    handleImageError(): void {
+    public handleImageError(): void {
         this.imageUrlErrorOccurred = true;
     }
 
-    setupTagsInCurrentLang(): void {
+    public setupTagsInCurrentLang(): void {
         this.tagsInCurrentLang = [];
         if (this.assignedTags && this.assignedTags.length > 0) {
             this.assignedTags.forEach((tag) => {

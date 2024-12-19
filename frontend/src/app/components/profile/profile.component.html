@@ -5,13 +5,18 @@
         </app-profile-overview>
 
         <div class="my-5">
-            <app-profile-reservations
-                [user]="user"
-                [reservations]="reservationsObs$ | async">
-            </app-profile-reservations>
+            <ng-container *ngIf="(locationsObs$ | async) as locations">
+                <ng-container *ngIf="(reservationsObs$ | async) as reservations">
+                    <app-profile-reservations
+                        [user]="user"
+                        [locations]="locations"
+                        [reservations]="reservations">
+                    </app-profile-reservations>
+                </ng-container>
+            </ng-container>
         </div>
 
-        <app-profile-penalties
+        <app-profile-penalties 
             [user]="user">
         </app-profile-penalties>
     </div>

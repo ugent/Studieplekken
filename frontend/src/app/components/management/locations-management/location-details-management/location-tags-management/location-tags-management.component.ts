@@ -6,7 +6,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
 import {LocationService} from '@/services/api/locations/location.service';
 import {TagsService} from '@/services/api/tags/tags.service';
-import {matSelectionChanged} from '@/util/GeneralFunctions';
+import {matSelectionChanged} from '@/helpers/GeneralFunctions';
 import {Location} from '@/model/Location';
 import {LocationTag} from '@/model/LocationTag';
 import {ModalComponent} from '../../../../stad-gent-components/molecules/modal/modal.component';

@@ -1,7 +1,9 @@
 <ng-container>
     <div class="faq-sidebar-item px-2 py-1 rounded d-flex align-items-center justify-content-between fs-7 fw-semibold my-2"  (click)="toggled = !toggled">
         <div class="d-flex align-items-center gap-2">
-            <span class="faq-sidebar-item-index">{{ index + 1}}</span>
+            <span class="faq-sidebar-item-index">
+                <i class="icon-info"></i>
+            </span>
             <span>{{ category.name.translations[locale] }}</span>
         </div>
         <span class="icon-chevron-down fs-5"></span>

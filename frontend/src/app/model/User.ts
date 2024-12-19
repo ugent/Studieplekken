@@ -20,6 +20,10 @@ export class User {
     ) {
     }
 
+    getFullName(): string {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
     /**
      * Check if the user is logged in
      *

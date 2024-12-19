@@ -8,6 +8,8 @@ import {Cache} from '../../cache/Cache';
 import {Location} from '@/model/Location';
 import {LocationTag} from '@/model/LocationTag';
 import {User} from '@/model/User';
+import { flatMap, map, tap } from 'rxjs/operators';
+import * as moment from 'moment';
 
 type locationOverview = { [locationName: string]: string[] };
 
@@ -64,9 +66,14 @@ export class LocationService {
      * - `locationName`: The name of the location.
      * - `nextReservableFrom`: The next available reservation time as a Moment object.
      */
-    public getAllLocationNextReservableFroms(): Observable<{locationName: string, nextReservableFrom: Moment}[]> {
-        return this.http.get<{locationName: string, nextReservableFrom: Moment}[]>(
-            api.allReservableFroms
+    public getAllLocationNextReservableFroms(): Observable<{ locationName: string; nextReservableFrom: Moment }[]> {
+        return this.http.get<{ locationName: string, nextReservableFrom: Moment}[]>(api.allReservableFroms).pipe(
+            map((items) =>
+                items.map(({locationName, nextReservableFrom}) => ({
+                    locationName,
+                    nextReservableFrom: moment(nextReservableFrom)
+                }))
+            )
         );
     }
 

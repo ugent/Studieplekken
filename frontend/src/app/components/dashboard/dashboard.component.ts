@@ -21,39 +21,33 @@ import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/brea
     styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-    locations: Location[];
-    locationNextReservableFroms = new Map<string, Moment>();
-    filteredLocations: Location[];
-    filteredLocationsBackup: Location[];
+    public locations: Location[];
+    public locationNextReservableFroms = new Map<string, Moment>();
+    public filteredLocations: Location[] = [];
+    public filteredLocationsBackup: Location[] = [];
 
-    // the tags that were selected to filter on
-    selectedTags: LocationTag[];
-    // the building that was selected to filter on
-    selectedBuilding: Building;
-    // the name that should be filtered
-    locationSearch: string;
+    public selectedTags: LocationTag[] = [];
+    public selectedBuilding: Building;
+    public locationSearch: string;
 
-    tagFilterFormGroup = new UntypedFormGroup({
+    public tagFilterFormGroup = new UntypedFormGroup({
         filteredTags: new UntypedFormControl(''),
     });
 
-    buildingFilterFormGroup = new UntypedFormGroup({
+    public buildingFilterFormGroup = new UntypedFormGroup({
         filteredBuilding: new UntypedFormControl(''),
     });
 
-    currentLang: string;
-
-    successOnRetrievingLocations: boolean = undefined;
-
-    showStagingWarning = environment.showStagingWarning;
-
-    showOpen = false;
+    public currentLang: string;
+    public successOnRetrievingLocations: boolean = undefined;
+    public showStagingWarning = environment.showStagingWarning;
+    public showOpen = false;
 
     private locationSub: Subscription;
     private nextReservableFromSub: Subscription;
 
-    buildingObs: Observable<Building[]>;
-    tagObs: Observable<LocationTag[]>;
+    public buildingObs: Observable<Building[]>;
+    public tagObs: Observable<LocationTag[]>;
 
     constructor(
         private locationService: LocationService,
@@ -64,15 +58,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.currentLang = this.translate.currentLang;
+        this.successOnRetrievingLocations = null;
+
         this.translate.onLangChange.subscribe(() => {
             this.currentLang = this.translate.currentLang;
         });
-
-        this.selectedTags = [];
-
-        this.successOnRetrievingLocations = null;
 
         this.locationSub = this.locationService.getLocations().subscribe(
             (next) => {
@@ -87,8 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.nextReservableFromSub = this.locationService
-            .getAllLocationNextReservableFroms()
+        this.nextReservableFromSub = this.locationService.getAllLocationNextReservableFroms()
             .subscribe((next) => {
                 next.forEach((next2) => {
                     this.locationNextReservableFroms.set(next2.locationName, next2.nextReservableFrom);

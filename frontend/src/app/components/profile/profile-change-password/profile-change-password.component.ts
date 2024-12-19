@@ -3,7 +3,7 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import {
   validateConfirmationPassword,
   validPassword,
-} from '@/validators/PasswordValidators';
+} from '@/helpers/validators/PasswordValidators';
 import { AuthenticationService } from '@/services/authentication/authentication.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
