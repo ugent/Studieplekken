@@ -56,93 +56,6 @@
         </button>
     </div>
 </div>
-<!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
-<ng-template>
-    <app-modal>
-        <!-- Header -->
-        <h2 class="modal-title" id="deleteLocationModalLabel" modal-header>
-            {{ "management.reservations.location.deleteModal.title" | translate }}
-        </h2>
-
-        <!-- Body -->
-        <div modal-body>
-            <div>
-                <b>{{
-                    "management.reservations.location.deleteModal.body" | translate
-                    }}</b>
-                <br/><br/>
-                <ul *ngIf="locationReservationToDelete !== undefined">
-                    <li>
-                        <b style="margin-right: 5px"
-                        ><i>{{
-                            ("management.locationDetails.calendar.reservations.table.user"
-                                | translate) + ": "
-                            }}</i></b
-                        >{{
-                        locationReservationToDelete.user.firstName +
-                        " " +
-                        locationReservationToDelete.user.lastName
-                        }}
-                    </li>
-                    <li>
-                        <b style="margin-right: 5px"
-                        ><i>{{
-                            ("management.locationDetails.calendar.reservations.table.attended"
-                                | translate) + ": "
-                            }}</i></b
-                        >{{
-                        (locationReservationToDelete.isPresent()
-                                ? "general.yes"
-                                : "general.no"
-                        ) | translate
-                        }}
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div modal-footer>
-            <button
-                type="button"
-                class="button button-primary"
-                (click)="deleteLocationReservation()"
-            >
-                {{ "management.reservations.location.deleteModal.yesButton" | translate }}
-            </button>
-            <button
-                type="button"
-                class="button button-secondary"
-                (click)="closeModal()"
-            >
-                {{ "management.reservations.location.deleteModal.noButton" | translate }}
-            </button>
-        </div>
-    </app-modal>
-
-    <div class="container-fluid">
-        <div
-            class="messages messages--info"
-            *ngIf="successDeletingLocationReservation === null"
-        >
-            {{ "management.reservations.location.deleteModal.loading" | translate }}
-        </div>
-
-        <div
-            class="messages messages--success"
-            *ngIf="successDeletingLocationReservation === true"
-        >
-            {{ "management.reservations.location.deleteModal.success" | translate }}
-        </div>
-
-        <div
-            class="messages messages--error"
-            *ngIf="successDeletingLocationReservation === false"
-        >
-            {{ "management.reservations.location.deleteModal.error" | translate }}
-        </div>
-    </div>
-</ng-template>
 
 <app-modal #finishScanningModal>
     <!-- Modal header -->
@@ -223,6 +136,15 @@
     </div>
 </app-modal>
 
-<ng-template #penaltyManager>
-    <app-user-penalty-manager [currentUser]="penaltyManagerUser"></app-user-penalty-manager>
-</ng-template>
+<app-modal #penaltyManager>
+    <h2 modal-header>
+        Beheer strafpunten
+    </h2>
+    <app-user-penalty-manager
+        *ngIf="penaltyManagerUser"
+        [currentUser]="penaltyManagerUser"
+        [penalties]="penaltyManagerUserPenalties$ | async"
+        (updatedPenalties)="this.refreshPenalties$.next()"
+        modal-body>
+    </app-user-penalty-manager>
+</app-modal>

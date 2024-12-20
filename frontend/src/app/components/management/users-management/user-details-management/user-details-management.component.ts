@@ -54,23 +54,27 @@ export class UserDetailsManagementComponent implements OnInit {
             this.addedAuthoritiesObs$ = this.authoritiesService.getAuthoritiesOfUser(
                 currentUser.userId
             );
+
             // Get the reservations of the user.
             this.reservationsObs$ = this.reservationService.getLocationReservationsOfUser(
                 currentUser.userId
             );
+
             // Get the penalties of the user.
             this.penaltiesObs$ = this.penaltyService.getPenaltiesOfUserById(
                 currentUser.userId
             );
+
             // Query the logged-in user.
             this.loggedInUserObs$ = this.authenticationService.getUserObs().pipe(
                 tap((user: User) =>
-                    // Show roles only for admins.
                     this.showRolesManagement = user.isAdmin()
                 )
             );
+
             // Get the locations.
             this.locationsObs$ = this.locationService.getAllLocations();
+
             // Query the addable authorities.
             this.addableAuthoritiesObs$ = combineLatest([this.loggedInUserObs$, this.addedAuthoritiesObs$]).pipe(
                 switchMap(([user, addedAuthorities]) =>
@@ -95,7 +99,7 @@ export class UserDetailsManagementComponent implements OnInit {
         );
     }
 
-    refresh(): void {
+    public refresh(): void {
         this.refresh$.next();
     }
 }

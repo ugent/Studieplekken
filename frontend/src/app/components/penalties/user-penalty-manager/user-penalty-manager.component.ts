@@ -25,7 +25,7 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         super();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         super.ngOnInit();
 
         this.refresh$.subscribe(() =>
@@ -33,14 +33,14 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         );
     }
 
-    setupForm(item: Penalty = new Penalty()): void {
+    public setupForm(item: Penalty = new Penalty()): void {
         this.formGroup = new FormGroup<any>({
             points: new FormControl(item.points, Validators.required),
             description: new FormControl(item.description, Validators.required)
         });
     }
 
-    storeAdd(body: any = this.formGroup.value): void {
+    public storeAdd(body: any = this.formGroup.value): void {
         const penalty = new Penalty();
         penalty.designee = this.currentUser;
         penalty.points = body.points;
@@ -50,13 +50,13 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         );
     }
 
-    storeDelete(item: Penalty): void {
+    public storeDelete(item: Penalty): void {
         this.sendBackendRequest(
             this.penaltyService.deletePenalty(item)
         );
     }
 
-    getTableActions(): TableAction<Penalty>[] {
+    public getTableActions(): TableAction<Penalty>[] {
         return [
             new DeleteAction((penalty: Penalty) =>
                 this.storeDelete(penalty)
@@ -64,7 +64,7 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         ];
     }
 
-    getTableMapper(): TableMapper<Penalty> {
+    public getTableMapper(): TableMapper<Penalty> {
         return (penalty: Penalty) => ({
             'profile.penalties.table.header.timestamp': penalty.createdAt.format('DD/MM/YYYY HH:mm'),
             'profile.penalties.table.header.issuer': penalty.issuer ? penalty.issuer.firstName + ' ' + penalty.issuer.lastName : '-',

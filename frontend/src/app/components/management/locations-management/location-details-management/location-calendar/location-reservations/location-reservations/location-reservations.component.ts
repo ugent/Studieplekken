@@ -24,6 +24,10 @@ import {
 } from '@/model/LocationReservation';
 import {Timeslot} from '@/model/Timeslot';
 import {ModalComponent} from '@/components/stad-gent-components/molecules/modal/modal.component';
+import { Penalty } from '@/model/Penalty';
+import { PenaltyList, PenaltyService } from '@/services/api/penalties/penalty.service';
+import { Observable, Subject } from 'rxjs';
+import { startWith, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-location-reservations',
@@ -51,9 +55,12 @@ export class LocationReservationsComponent implements OnChanges {
     userAlreadyPresentWarning: User[] = [];
     selectionTimeout;
     penaltyManagerUser: User;
+    penaltyManagerUserPenalties$: Observable<PenaltyList>;
+    refreshPenalties$: Subject<void> = new Subject<void>();
 
     constructor(
         private locationReservationService: LocationReservationsService,
+        private penaltyService: PenaltyService,
         private modalService: MatDialog,
         private barcodeService: BarcodeService,
         private tabularDataService: TableDataService
@@ -267,7 +274,7 @@ export class LocationReservationsComponent implements OnChanges {
     onAction(
         {columnIndex, data}: { columnIndex: number; data: LocationReservation },
         errorTemplate: ModalComponent,
-        penaltyManager: TemplateRef<unknown>
+        penaltyManager: ModalComponent
     ): void {
         const previousScanned = this.lastScanned;
         if (this.isManagement) {
@@ -324,8 +331,12 @@ export class LocationReservationsComponent implements OnChanges {
         this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
     }
 
-    openPenaltyBox(locres: LocationReservation, modal: TemplateRef<unknown>): void {
+    openPenaltyBox(locres: LocationReservation, modal: ModalComponent): void {
         this.penaltyManagerUser = locres.user;
-        this.modalService.open(modal, {panelClass: ['cs--cyan', 'bigmodal']});
+        this.penaltyManagerUserPenalties$ = this.refreshPenalties$.pipe(
+            switchMap(() => this.penaltyService.getPenaltiesOfUserById(locres.user.userId))
+        );
+        this.refreshPenalties$.next();
+        modal.open();
     }
 }

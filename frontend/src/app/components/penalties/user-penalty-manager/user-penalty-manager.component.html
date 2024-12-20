@@ -8,6 +8,7 @@
             {{ 'penalties.management.addButton' | translate}}
         </button>
     </div>
+
     <!-- List -->
     <app-management-table
         [stateless]="false"
@@ -15,12 +16,11 @@
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
     </app-management-table>
+
     <!-- Add penalty form -->
     <app-modal #modify>
         <h2 modal-header>
-            <ng-container>
-                {{ 'penalties.management.addButton' | translate }}
-            </ng-container>
+            {{ 'penalties.management.addButton' | translate }}
         </h2>
         <div modal-body>
             <form [formGroup]="formGroup">

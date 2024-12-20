@@ -23,7 +23,7 @@
             </app-user-authorities-management>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4" *ngIf="context.reservations && context.locations">
             <app-profile-reservations
                     [user]="currentUser"
                     [reservations]="context.reservations"
@@ -43,7 +43,7 @@
         </div>
 
         <!-- If the user is an ADMIN, then he may change the role of a user -->
-        <div *ngIf="showRolesManagement">
+        <div class="mt-4" *ngIf="showRolesManagement">
             <app-user-roles
                     [user]="currentUser">
             </app-user-roles>
