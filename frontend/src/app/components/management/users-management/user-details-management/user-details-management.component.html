@@ -4,7 +4,8 @@
     penalties: penaltiesObs$ | async,
     reservations: reservationsObs$ | async,
     addedAuthorities: addedAuthoritiesObs$ | async,
-    addableAuthorities: addableAuthoritiesObs$ | async
+    addableAuthorities: addableAuthoritiesObs$ | async,
+    locations: locationsObs$ | async
 } as context;">
     <ng-container *ngIf="context.currentUser as currentUser; else notFound">
         <!-- Form with details of the user -->
@@ -22,10 +23,11 @@
             </app-user-authorities-management>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4" *ngIf="context.reservations && context.locations">
             <app-profile-reservations
                     [user]="currentUser"
                     [reservations]="context.reservations"
+                    [locations]="context.locations"
                     [isManagement]="true">
             </app-profile-reservations>
         </div>
@@ -41,7 +43,7 @@
         </div>
 
         <!-- If the user is an ADMIN, then he may change the role of a user -->
-        <div *ngIf="showRolesManagement">
+        <div class="mt-4" *ngIf="showRolesManagement">
             <app-user-roles
                     [user]="currentUser">
             </app-user-roles>

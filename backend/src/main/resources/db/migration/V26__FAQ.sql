@@ -13,10 +13,10 @@ CREATE TABLE faq_categories
     updated_at                  timestamp default current_timestamp,
 
     primary key (id),
-    foreign key (created_by_user_id) references users (user_id),
-    foreign key (category_id) references faq_categories (id),
-    foreign key (description_translatable_id) references translatables (id),
-    foreign key (name_translatable_id) references translatables (id)
+    foreign key (created_by_user_id) references users (user_id) on delete cascade,
+    foreign key (category_id) references faq_categories (id) on delete cascade,
+    foreign key (description_translatable_id) references translatables (id) on delete cascade,
+    foreign key (name_translatable_id) references translatables (id) on delete cascade
 );
 
 CREATE TABLE faq_items
@@ -31,8 +31,8 @@ CREATE TABLE faq_items
     updated_at              timestamp default current_timestamp,
 
     primary key (id),
-    foreign key (category_id) references faq_categories (id),
-    foreign key (created_by_user_id) references users (user_id),
-    foreign key (content_translatable_id) references translatables (id),
-    foreign key (title_translatable_id) references translatables (id)
+    foreign key (category_id) references faq_categories (id) on delete cascade,
+    foreign key (created_by_user_id) references users (user_id) on delete cascade,
+    foreign key (content_translatable_id) references translatables (id) on delete cascade,
+    foreign key (title_translatable_id) references translatables (id) on delete cascade
 )
