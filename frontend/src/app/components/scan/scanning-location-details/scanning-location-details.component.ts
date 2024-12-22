@@ -33,6 +33,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
     protected isLoading: boolean;
     protected hasLoadingError: boolean = false;
     protected scanningError: string;
+    protected confirmOnScan: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -99,6 +100,10 @@ export class ScanningLocationDetailsComponent implements OnInit {
             this.setScanningError('scan.maybe');
         } else {
             this.selectedReservation = reservation;
+
+            if (this.confirmOnScan === true) {
+                this.confirmReservation();
+            }
         }
     }
 

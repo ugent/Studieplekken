@@ -1201,7 +1201,8 @@
         "noPermission": "Geef de nodige rechten aan de website om te scannen. Je camera wordt enkel geactiveerd wanneer deze pop-up zichtbaar is.",
         "noReservation": "Deze gebruiker heeft geen reservatie voor deze locatie op dit moment.",
         "confirmText": "Bevestig {{name}} met ID {{id}}?",
-        "successText": "De scan is gelukt!",
+        "successText": "<b>{{name}}</b> werd succesvol gescand!",
+        "autoConfirmHint": "Vink onderstaand vakje aan om automatisch een reservatie te bevestigen bij het scannen. Dit betekent dat de gebruiker niet meer handmatig bevestigd moet worden.",
         "confirmButton": "Bevestig",
         "cancelButton": "Annuleer"
     },
