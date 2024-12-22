@@ -81,7 +81,9 @@ export class ScannerComponent {
      * @param isCompatible - A boolean indicating whether the torch feature is compatible.
      */
     public onTorchCompatible(isCompatible: boolean): void {
-        this.isTorchEnabled = isCompatible;
+        // Enabling the torch is not desirable since it
+        // has a glaring effect on the camera feed.
+        this.isTorchEnabled = false;
     }
 
     /**

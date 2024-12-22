@@ -33,16 +33,32 @@
         <app-message *ngIf="!selectedReservation && !scannedReservation">
             {{'scan.mobile-hint' | translate}}
         </app-message>
-        <app-message *ngIf="!scanningError && scannedReservation" type="status" class="w-100">
-            {{'scan.successText' | translate}}
+        <app-message
+            *ngIf="!scanningError && scannedReservation"
+            type="status" 
+            class="w-100">
+            <span 
+                [innerHTML]="'scan.successText' | translate: { 
+                    name: scannedReservation.user.firstName + ' ' + scannedReservation.user.lastName 
+                }">
+            </span>
         </app-message>
         <app-scanner
-            [class.hide]="selectedReservation || scanningError" 
+            [class.hide]="selectedReservation || scanningError"
             (scanSuccess)="scanUser(reservations, $event)">
         </app-scanner>
+        <div class="mb-3">
+            <p class="text-muted">
+                {{'scan.autoConfirmHint' | translate}}
+            </p>
+            <app-checkbox
+                [(ngModel)]="confirmOnScan"
+                [label]="'Automatisch bevestigen bij scannen'">
+            </app-checkbox>
+        </div>
     </div>
     <div modal-footer>
-        <app-message *ngIf="selectedReservation" class="w-100">
+        <app-message *ngIf="!confirmOnScan && selectedReservation" class="w-100">
             {{'scan.confirmText' | translate: { 
                 name: selectedReservation.user.firstName + ' ' + selectedReservation.user.lastName,
                 id: selectedReservation.user.userId

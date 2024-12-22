@@ -1196,7 +1196,8 @@
         "noPermission": "Give the necessary permissions to use the scanner. The scanner is only active when this pop-up is shown.",
         "noReservation": "This user does not have a reservation for this location at the moment.",
         "confirmText": "Confirm {{name}} with ID {{id}}?",
-        "successText": "The scan succeeded!",
+        "successText": "{{name}} was scanned successfully.",
+        "autoConfirmHint": "Check this box to automatically confirm the scan.",
         "confirmButton": "Confirm",
         "cancelButton": "Cancel"
     },
