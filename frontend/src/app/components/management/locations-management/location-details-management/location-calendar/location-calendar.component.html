@@ -11,10 +11,10 @@
                 <app-calendar
                     [events]="events"
                     [refresh]="refresh"
-                      (timeslotPickedEvent)="timeslotPickedHandler($event)"
-                      (hourPickedEvent)="hourPickedHandler(location, $event)"
-                      [(currentEventTime)]="currentTime"
-                      (calendarViewStyle)="calendarViewStyle">
+                    (timeslotPickedEvent)="timeslotPickedHandler($event)"
+                    (hourPickedEvent)="hourPickedHandler(location, $event)"
+                    [(currentEventTime)]="currentTime"
+                    (calendarViewStyle)="calendarViewStyle">
                 </app-calendar>
             </ng-container>
 
