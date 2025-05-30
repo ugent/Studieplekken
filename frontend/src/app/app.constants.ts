@@ -25,7 +25,7 @@ export enum Language {
 
 export const defaultOpeningHour = 8;
 export const defaultClosingHour = 17;
-export const SEAT_COUNT_THRESHOLD = 50;
+export const SEAT_COUNT_THRESHOLD = 10_000;
 
 /**
  * Representative colors per institution.
