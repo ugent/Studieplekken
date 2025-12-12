@@ -102,6 +102,7 @@ import { LocationReservationCalendarComponent } from '@/components/dashboard/loc
 import { LocationReservationListComponent } from '@/components/dashboard/location-reservation/location-reservation-list/location-reservation-list.component';
 import { LocationReservationMapComponent } from '@/components/dashboard/location-reservation/location-reservation-map/location-reservation-map.component';
 import { FaqComponent } from '@/components/faq/faq.component';
+import { InformationComponent } from '@/components/information/information.component';
 import { FaqSearchComponent } from '@/components/faq/faq-search/faq-search.component';
 import { FaqItemComponent } from '@/components/faq/faq-item/faq-item.component';
 import { FaqSidebarComponent } from '@/components/faq/faq-sidebar/faq-sidebar.component';
@@ -330,6 +331,10 @@ const routes: Routes = [
         ],
     },
     {
+        path: 'information',
+        component: InformationComponent
+    },
+    {
         path: 'faq',
         component: FaqComponent,
         children: [
@@ -445,6 +450,7 @@ const routes: Routes = [
         LocationReservationListComponent,
         LocationReservationMapComponent,
         FaqComponent,
+        InformationComponent,
         FaqSearchComponent,
         FaqItemComponent,
         FaqSidebarComponent,
